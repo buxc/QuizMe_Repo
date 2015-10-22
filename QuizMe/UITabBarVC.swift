@@ -1,5 +1,5 @@
 //
-//  LoginVC.swift
+//  UITabBarVC.swift
 //  QuizMe
 //
 //  Created by Vasili Papastrat on 10/18/15.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginVC: UIViewController, UITextFieldDelegate {
+class UITabBarVC: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,13 +31,5 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         // Pass the selected object to the new view controller.
     }
     */
-    /**
-    Text_Field_Should_Return
-    
-    Allows keyboard to go away after user enters quantity by pressing return
-    **/
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
+
 }
