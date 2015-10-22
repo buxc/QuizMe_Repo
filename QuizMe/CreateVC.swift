@@ -7,7 +7,12 @@
 //
 
 import UIKit
+/**
+    ViewController handling screen where User creates new questions
+    and sets.
 
+    *NOT FINISHED*
+**/
 class CreateVC: UIViewController {
 
     override func viewDidLoad() {

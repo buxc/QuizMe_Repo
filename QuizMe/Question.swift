@@ -7,7 +7,9 @@
 //
 
 import Foundation
-
+/**
+    Database class
+**/
 class Question{
     var qid = 0
     var qText = ""

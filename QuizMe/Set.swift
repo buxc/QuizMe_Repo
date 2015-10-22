@@ -7,12 +7,14 @@
 //
 
 import Foundation
-
+/**
+    Database class
+**/
 class Set{
     var pid = 0
     var name = ""
     var topic = ""
-    var privat = true
+    var privat = true  //'private' is a keyword
     
     init(pid:Int, name:String, topic:String, privat:Bool){
         self.pid = pid

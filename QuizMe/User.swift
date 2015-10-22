@@ -7,7 +7,9 @@
 //
 
 import Foundation
-
+/**
+    Database Class
+**/
 class User{
     var uid = 0
     var name = ""

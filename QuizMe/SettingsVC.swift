@@ -7,7 +7,12 @@
 //
 
 import UIKit
+/**
+    ViewController handling settings screen.
+    Not even sure what settings we'd put in here
 
+    *NOT FINISHED*
+**/
 class SettingsVC: UIViewController {
 
     override func viewDidLoad() {

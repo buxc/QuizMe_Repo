@@ -7,7 +7,12 @@
 //
 
 import UIKit
+/**
+    ViewController handling Favorites screen. 
+    Will implement if we have time later
 
+    *NOT FINISHED*
+**/
 class FavoritesVC: UIViewController {
 
     override func viewDidLoad() {

@@ -61,6 +61,7 @@
                                     <color key="titleColor" red="0.3146688098" green="1" blue="0.9845039001" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
+                                    <action selector="btLogin_OnClick:" destination="9kR-VR-w5f" eventType="touchUpInside" id="2JS-aj-UpU"/>
                                     <segue destination="hKp-iL-0Pj" kind="show" id="btD-OK-blW"/>
                                 </connections>
                             </button>
@@ -92,6 +93,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Sign In" id="hGX-MD-y9y"/>
+                    <connections>
+                        <outlet property="tfPassword" destination="1kw-z0-eTS" id="6uE-JQ-2fM"/>
+                        <outlet property="tfUsername" destination="409-0W-74Q" id="GON-Md-Yuz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qmx-GC-BYb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -268,9 +273,10 @@
                                     <outlet property="delegate" destination="Vhw-ME-xId" id="k2Q-4q-oCw"/>
                                 </connections>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Reenter Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gvq-ms-NSk">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Reenter Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gvq-ms-NSk">
                                 <rect key="frame" x="233" y="304" width="134" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="Vhw-ME-xId" id="zDz-6x-LAX"/>

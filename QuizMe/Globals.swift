@@ -7,7 +7,9 @@
 //
 
 import Foundation
-
+/**
+    Global variables and functions
+**/
 let EXTERNAL_IP = "http://108.183.44.149"
 let CREATE_LOGIN_PHP = "\(EXTERNAL_IP)/QuizMe/createLogin.php"
 let TEST_PHP = "\(EXTERNAL_IP)/QuizMe/test.php"

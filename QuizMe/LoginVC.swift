@@ -7,9 +7,16 @@
 //
 
 import UIKit
+/**
+    ViewController handling User Login. Pretty basic
 
+    *NOT FINISHED*
+**/
 class LoginVC: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet var tfUsername: UITextField!
+    @IBOutlet var tfPassword: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,11 +38,26 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         // Pass the selected object to the new view controller.
     }
     */
-    /**
+    
+/**
+    btLogin_OnClick
+    Executes when 'Log in' button pressed
+**/
+    @IBAction func btLogin_OnClick(sender: UIButton) {
+        submitRequest()
+    }
+/**
+    SubmitRequest
+    Sends username and password to server to verify login info
+**/
+    func submitRequest(){
+        
+    }
+/**
     Text_Field_Should_Return
     
     Allows keyboard to go away after user enters quantity by pressing return
-    **/
+**/
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false

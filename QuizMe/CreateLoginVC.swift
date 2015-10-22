@@ -7,7 +7,11 @@
 //
 
 import UIKit
+/**
+    ViewController handling the create login screen
 
+    *ALMOST FINISHED*
+**/
 class CreateLoginVC: UIViewController, UITextFieldDelegate {
 
     @IBOutlet var tfUsername: UITextField!
@@ -36,7 +40,12 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         // Pass the selected object to the new view controller.
     }
     */
+/**
+        PassordsMatch
+        Checks to see if passwords match and meet conditions
     
+        @return Bool true if they do meet conditions, false if not
+**/
     func passwordsMatch() -> Bool{
         if tfPassword1.text != "" && tfPassword1.text == tfPassword2.text{
             return true
@@ -45,19 +54,24 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             return false
         }
     }
+/**
+    SubmitRequest
+    The fxn that talks to the server. Sends the inputted name and password from the 
+    textfields into a NSMutableRequest and sends to server
+**/
     func submitRequest(){
         let send_this = "name='\(tfUsername.text!)'&pw='\(tfPassword2.text!)'"
         let request = getRequest(send_this, urlString: TEST_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
-            (data, response, error) in
+            (data, response, error) in  //all this happens once request has been completed, in another queue
             if error != nil{
                 print("Error with creating login")
                 return
             }
             if let data = data{
                 do{
-                    if let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSArray{
-                        dispatch_async(dispatch_get_main_queue(), {
+                    if let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSArray{    //put response into JSON so can access like a dictionary
+                        dispatch_async(dispatch_get_main_queue(), {//get main queue because accessing UI
                             for dic in json{
                                 if case let result as String = dic["name"]{
                                     if result == "success"{

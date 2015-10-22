@@ -7,7 +7,12 @@
 //
 
 import UIKit
-
+/**
+    ViewController handling the search screen.
+    Will implement if we have time at end.
+    
+    *NOT FINISHED*
+**/
 class SearchVC: UIViewController {
 
     override func viewDidLoad() {

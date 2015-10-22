@@ -7,7 +7,13 @@
 //
 
 import UIKit
+/**
+    ViewController handling Recents screen which is where
+    all user created questions and sets will appear. Planned to have
+    everything show up in a UITableView with custom UITableViewCells
 
+    *NOT FINISHED*
+**/
 class RecentsVC: UIViewController{
     
     override func viewDidLoad() {
@@ -23,22 +29,4 @@ class RecentsVC: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-    /*func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
-        return UIBarPosition.TopAttached
-    }
-    
-    func setUpNavBar(){
-        let navBar = UINavigationBar(frame: CGRectMake(0, 20, self.view.frame.size.width, 44))
-        navBar.backgroundColor = UIColor.whiteColor()
-        navBar.delegate = self
-        let navItem = UINavigationItem()
-        navItem.title = "QuizMe"
-        //navItem.titleView = UIImageView(image: UIImage(named: "QMlittle.png"))
-        let signOutBT = UIBarButtonItem(title:"Sign Out", style: UIBarButtonItemStyle.Plain, target:self,action:nil)
-        navItem.rightBarButtonItem = signOutBT
-        navBar.items = [navItem]
-        self.view.addSubview(navBar)
-    }
-*/
 }
