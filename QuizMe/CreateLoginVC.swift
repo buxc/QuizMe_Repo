@@ -10,10 +10,12 @@ import UIKit
 /**
     ViewController handling the create login screen
 
-    *ALMOST FINISHED*
+    *FINISHED*
 **/
 class CreateLoginVC: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet var lbError: UILabel!
+    @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword1: UITextField!
     @IBOutlet var tfPassword2: UITextField!
@@ -51,6 +53,8 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             return true
         }
         else{
+            lbError.hidden = false
+            lbError.text = "Error: Password mismatch"
             return false
         }
     }
@@ -59,9 +63,10 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     The fxn that talks to the server. Sends the inputted name and password from the 
     textfields into a NSMutableRequest and sends to server
 **/
-    func submitRequest(){
+    func queryUser(){
+        aiSpinner.startAnimating()
         let send_this = "name='\(tfUsername.text!)'&pw='\(tfPassword2.text!)'"
-        let request = getRequest(send_this, urlString: TEST_PHP)
+        let request = getRequest(send_this, urlString: QUERY_USERNAME_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue
             if error != nil{
@@ -71,26 +76,41 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             if let data = data{
                 do{
                     if let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSArray{    //put response into JSON so can access like a dictionary
-                        dispatch_async(dispatch_get_main_queue(), {//get main queue because accessing UI
-                            for dic in json{
-                                if case let result as String = dic["name"]{
-                                    if result == "success"{
-                                        //display nice message
-                                        self.tfUsername.text = "it worked"
-                                    }
-                                    else if result == "name taken"{
-                                        self.tfUsername.text = "name taken"
-                                    }
-                                    else{
-                                        self.tfUsername.text = "fucked up"
-                                    }
-                                }
-                            }
-                        })
+                        if(json.count == 0){
+                            self.createUser()
+                        }
+                        else{
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self.lbError.text = "Error: Username taken"
+                                self.lbError.hidden = false
+                                self.aiSpinner.stopAnimating()
+                            })
+                        }
                     }
                 }
              catch _ as NSError {}
             }
+        }
+        task.resume()
+    }
+/**
+    CreateUser
+    
+    Inserts username and password into database
+**/
+    func createUser(){
+        let send_this = "name='\(tfUsername.text!)'&pw='\(tfPassword2.text!)'"
+        let request = getRequest(send_this, urlString: CREATE_USER_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            dispatch_async(dispatch_get_main_queue(), {
+                self.navigationController?.popToRootViewControllerAnimated(true)
+            })
+            
         }
         task.resume()
     }
@@ -99,7 +119,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             //display error message
             return
         }
-        submitRequest()
+        queryUser()
     }
     /**
     Text_Field_Should_Return

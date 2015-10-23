@@ -11,8 +11,11 @@ import Foundation
     Global variables and functions
 **/
 let EXTERNAL_IP = "http://108.183.44.149"
-let CREATE_LOGIN_PHP = "\(EXTERNAL_IP)/QuizMe/createLogin.php"
+let QUERY_USERNAME_PHP = "\(EXTERNAL_IP)/QuizMe/queryUsername.php"
+let CREATE_USER_PHP = "\(EXTERNAL_IP)/QuizMe/createUser.php"
 let TEST_PHP = "\(EXTERNAL_IP)/QuizMe/test.php"
+
+var USERNAME = ""
 
 /**
 Get_Request
