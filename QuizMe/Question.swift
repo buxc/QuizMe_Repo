@@ -16,6 +16,13 @@ class Question{
     var aText = ""
     var choices : [String]?
     
+    init(){
+        qid = 0
+        qText = ""
+        aText = ""
+        choices = nil
+    }
+    
     init(qid:Int, qText:String, aText:String, choices:[String]?){
         self.qid = qid
         self.qText = qText

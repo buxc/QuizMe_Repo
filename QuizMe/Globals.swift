@@ -7,14 +7,16 @@
 //
 
 import Foundation
+import UIKit
 /**
     Global variables and functions
 **/
 let EXTERNAL_IP = "http://108.183.44.149"
 let QUERY_USERNAME_PHP = "\(EXTERNAL_IP)/QuizMe/queryUsername.php"
 let CREATE_USER_PHP = "\(EXTERNAL_IP)/QuizMe/createUser.php"
-let TEST_PHP = "\(EXTERNAL_IP)/QuizMe/test.php"
+let CREATE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/createQuestion.php"
 
+var UID = 0
 var USERNAME = ""
 
 /**
@@ -34,3 +36,4 @@ func getRequest(requestString : String, urlString : String) -> NSMutableURLReque
     request.HTTPBody = requestString.dataUsingEncoding(NSUTF8StringEncoding)
     return request
 }
+

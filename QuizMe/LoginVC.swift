@@ -10,11 +10,10 @@ import UIKit
 /**
     ViewController handling User Login. Pretty basic
 
-    *ALMOST FINISHED*
+    *PRACTICALLY FINISHED*
 **/
 class LoginVC: UIViewController, UITextFieldDelegate {
 
-    @IBOutlet var lbError: UILabel!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword: UITextField!
@@ -29,23 +28,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
-    
-    // MARK: - Navigation
-/*
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        if(segue.identifier == "loggedIn"){
-            if(USERNAME != ""){
-                
-            }
-        }
-        // Pass the selected object to the new view controller.
-    }
-    
-    */
 /**
     btLogin_OnClick
     Executes when 'Log in' button pressed
@@ -59,7 +42,6 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     clears uifields
 **/
     func clearFields(){
-        lbError.text = ""
         tfPassword.text = ""
         tfUsername.text = ""
     }
@@ -85,24 +67,25 @@ func submitRequest(){
                             self.aiSpinner.stopAnimating()
                             if(json.count == 1){//if username exists
                                 for dic in json{
+                                    if case let id as String = dic["uid"]{
                                     if case let name as String = dic["name"]{
                                         if case let pw as String = dic["password"]{
                                             if(self.tfPassword.text! == pw){
+                                                UID = Int(id)!
                                                 USERNAME = name
                                                 self.clearFields()
                                                 self.performSegueWithIdentifier("loggedIn", sender: self)
                                             }
                                             else{
-                                                self.lbError.text = "Incorrect password"
-                                                self.lbError.hidden = false
+                                                self.alertUser("Incorrect password")
                                             }
+                                        }
                                         }
                                     }
                                 }
                             }
                             else{//if username doesn't exist
-                                self.lbError.text = "Username does not exist"
-                                self.lbError.hidden = false
+                                self.alertUser("Username does not exist")
                             }
                         })
                     }
@@ -123,5 +106,16 @@ func submitRequest(){
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
+    }
+    /**
+    AlertUser
+    displays an alertbox showing passed in message with an "ok" button
+    
+    @arg message to be displayed to user
+    **/
+    func alertUser(message:String){
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
     }
 }
