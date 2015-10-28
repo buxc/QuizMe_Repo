@@ -15,7 +15,7 @@ import UIKit
 
     *BASICALLY FINISHED*
 **/
-class CreateVC: UIViewController {
+class CreateVC: UIViewController, UITextViewDelegate {
 
     @IBOutlet var lbLabel: UILabel!
     @IBOutlet var tvTextView: UITextView!
@@ -41,7 +41,7 @@ class CreateVC: UIViewController {
     @return Bool
 **/
     func inputGood() -> Bool{
-        if tvTextView.text?.characters.count < 50 && tvTextView.text?.characters.count > 0 {
+        if tvTextView.text?.characters.count < 200                                                                                                                                                                                                       && tvTextView.text?.characters.count > 0 {
             return true
         }
         return false
@@ -103,15 +103,25 @@ class CreateVC: UIViewController {
         tvTextView.becomeFirstResponder()
         btGoBack.hidden = true
     }
-    /**
+/**
     AlertUser
     displays an alertbox showing passed in message with an "ok" button
     
     @arg message to be displayed to user
-    **/
+**/
     func alertUser(message:String){
         let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
+    }
+/**
+    Lets keyboard dissapear after typing
+**/
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }

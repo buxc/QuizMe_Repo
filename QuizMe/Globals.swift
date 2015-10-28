@@ -15,9 +15,12 @@ let EXTERNAL_IP = "http://108.183.44.149"
 let QUERY_USERNAME_PHP = "\(EXTERNAL_IP)/QuizMe/queryUsername.php"
 let CREATE_USER_PHP = "\(EXTERNAL_IP)/QuizMe/createUser.php"
 let CREATE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/createQuestion.php"
+let GET_QUESTIONS_PHP = "\(EXTERNAL_IP)/QuizMe/getQuestions.php"
 
 var UID = 0
 var USERNAME = ""
+var running_question_timers = [Int : Bool]() //tells you whether or not a timer has started for particular question
+var running_set_timers = [Int : Bool]()//tells you whether or not a timer has started for particular set
 
 /**
 Get_Request

@@ -66,20 +66,23 @@ func submitRequest(){
                         dispatch_async(dispatch_get_main_queue(), {
                             self.aiSpinner.stopAnimating()
                             if(json.count == 1){//if username exists
+                                var flag = false
                                 for dic in json{
                                     if case let id as String = dic["uid"]{
                                     if case let name as String = dic["name"]{
                                         if case let pw as String = dic["password"]{
-                                            if(self.tfPassword.text! == pw){
+                                            if self.tfPassword.text! == pw {
+                                                flag = true
                                                 UID = Int(id)!
                                                 USERNAME = name
                                                 self.clearFields()
                                                 self.performSegueWithIdentifier("loggedIn", sender: self)
                                             }
-                                            else{
-                                                self.alertUser("Incorrect password")
+                                            if flag == false{
+                                                    self.alertUser("Incorrect password")
                                             }
-                                        }
+                                            
+                                           }
                                         }
                                     }
                                 }

@@ -10,7 +10,10 @@ import Foundation
 /**
     Database class
 **/
-class Question{
+class Question:Hashable,Equatable{
+    var hashValue : Int {
+        get{return qid}
+    }
     var qid = 0
     var qText = ""
     var aText = ""
@@ -29,4 +32,11 @@ class Question{
         self.aText = aText
         self.choices = choices
     }
+    
 }
+// MARK: Equatable
+    func ==(lhs: Question, rhs: Question) -> Bool{
+    return lhs.qid == rhs.qid
+}
+// MARK: Hashable
+//public var hashValue: Int { get }
