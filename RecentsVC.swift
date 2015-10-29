@@ -10,42 +10,83 @@ import UIKit
 
 class RecentsTVC: UITableViewController {
 
+    var questions = [Question]()
+    var timers = [Int : NSTimerWrapper]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
-
+    override func viewWillAppear(animated: Bool) {
+        questions.removeAll()
+        getQuestions()
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    func getQuestions(){
+        let send_this = "uid=\(UID)"
+        let request = getRequest(send_this, urlString: GET_QUESTIONS_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            if let data = data{
+                do{
+                    if let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSArray{    //put response into JSON so can access like a dictionary
+                            dispatch_async(dispatch_get_main_queue(), {
+                                for dic in json{
+                                    if case let qid as String = dic["qid"]{
+                                        if case let q as String = dic["question_text"]{
+                                            if case let a as String = dic["answer_text"]{
+                                                let question = Question(qid: Int(qid)!, qText: q, aText: a, choices: nil)
+                                                self.questions.append(question)
+                                                self.timers[question.qid] = NSTimerWrapper(timer: NSTimer()) //set question to having default timer
+                                                running_question_timers[question.qid] = false
+                                            }
+                                        }
+                                    }
+                                }
+                                self.tableView.reloadData()
+                            })
+                    }
+                }
+                catch _ as NSError {}
+            }
+        }
+        task.resume()
+    }
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return questions.count
     }
 
-    /*
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-
-        // Configure the cell...
-
-        return cell
+        var cell = tableView.dequeueReusableCellWithIdentifier("Basic") as! BasicTableViewCell?
+        if(cell == nil){
+            cell = BasicTableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Basic")
+        }
+        cell!.tvQuestion.text = questions[indexPath.row].qText
+        //cell!.tvAnswer.text = questions[indexPath.row].aText
+        return cell!
     }
-    */
+    
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -82,14 +123,17 @@ class RecentsTVC: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let indexPath = tableView.indexPathForSelectedRow
+        if let nextView = segue.destinationViewController as? SelectedCellVC{
+            nextView.question = questions[indexPath!.row]
+            nextView.timer = timers[questions[indexPath!.row].qid]!.timer
+        }
     }
-    */
+    
 
 }

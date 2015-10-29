@@ -17,6 +17,7 @@ import UIKit
 **/
 class CreateVC: UIViewController, UITextViewDelegate {
 
+    @IBOutlet var cvView: UIView!
     @IBOutlet var lbLabel: UILabel!
     @IBOutlet var tvTextView: UITextView!
     @IBOutlet var btEnter: UIButton!
@@ -27,6 +28,9 @@ class CreateVC: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tvTextView.becomeFirstResponder()
+        let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key, object: nil)
         // Do any additional setup after loading the view.
     }
 
@@ -35,6 +39,9 @@ class CreateVC: UIViewController, UITextViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    func dismissKeyboard(){
+        view.endEditing(true)
+    }
 /**
     InputGood
     Verifies that both question and answer provided are between 1 and 50 chars long
@@ -65,6 +72,20 @@ class CreateVC: UIViewController, UITextViewDelegate {
         }
         task.resume()
 }
+/**
+     SwitchEmbeddedVisibility
+     Switches visibility of view containing new set shit
+**/
+    func switchEmbeddedVisibility(){
+        if cvView.hidden == true{
+            cvView.hidden = false
+            view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
+        }
+        else{
+            cvView.hidden = true
+            view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
+        }
+    }
 /**
     ChangeState
     Updates user prompt for either question or answer
@@ -123,5 +144,8 @@ class CreateVC: UIViewController, UITextViewDelegate {
             return false
         }
         return true
+    }
+    @IBAction func btCreateNewSet_OnClick(sender: AnyObject) {
+        switchEmbeddedVisibility()
     }
 }

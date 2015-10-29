@@ -11,8 +11,10 @@ import UIKit
 class BasicTableViewCell: UITableViewCell {
 
     
-    @IBOutlet var tvQuestion: UITextView!
-    @IBOutlet var tvAnswer: UITextView!
+    @IBOutlet var lbType: UILabel!
+    @IBOutlet var lbQuestion: UILabel!
+    
+    //@IBOutlet var tvAnswer: UITextView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

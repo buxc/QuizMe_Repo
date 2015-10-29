@@ -10,7 +10,7 @@ import Foundation
 /**
     Database class
 **/
-class Question:Hashable,Equatable{
+class Question: Hashable,Equatable{
     var hashValue : Int {
         get{return qid}
     }

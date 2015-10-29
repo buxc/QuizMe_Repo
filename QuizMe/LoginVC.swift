@@ -17,10 +17,12 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword: UITextField!
+    var count = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
         // Do any additional setup after loading the view.
     }
 
@@ -28,7 +30,12 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    func dismissKeyboard(){
+        view.endEditing(true)
+    }
+    override func viewWillAppear(animated: Bool) {
+        count = 0
+    }
 /**
     btLogin_OnClick
     Executes when 'Log in' button pressed
@@ -66,19 +73,18 @@ func submitRequest(){
                         dispatch_async(dispatch_get_main_queue(), {
                             self.aiSpinner.stopAnimating()
                             if(json.count == 1){//if username exists
-                                var flag = false
                                 for dic in json{
                                     if case let id as String = dic["uid"]{
                                     if case let name as String = dic["name"]{
                                         if case let pw as String = dic["password"]{
                                             if self.tfPassword.text! == pw {
-                                                flag = true
+                                                self.count = 1
                                                 UID = Int(id)!
                                                 USERNAME = name
                                                 self.clearFields()
                                                 self.performSegueWithIdentifier("loggedIn", sender: self)
                                             }
-                                            if flag == false{
+                                            if self.count == 0{
                                                     self.alertUser("Incorrect password")
                                             }
                                             
