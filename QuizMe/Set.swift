@@ -10,7 +10,7 @@ import Foundation
 /**
     Database class
 **/
-class Set{
+class Set1{
     var pid = 0
     var name = ""
     var topic = ""

@@ -455,7 +455,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="169" id="tzZ-4s-ThV"/>
                                 </constraints>
-                                <state key="normal" title="Create 10 second timer"/>
+                                <state key="normal" title="Create 1 minute timer"/>
                                 <connections>
                                     <action selector="bt_OnClick:" destination="TvK-bc-2oQ" eventType="touchUpInside" id="EqP-6b-I44"/>
                                 </connections>
@@ -489,10 +489,10 @@
             </objects>
             <point key="canvasLocation" x="1796" y="-63"/>
         </scene>
-        <!--MyUI Tab Bar Controller-->
+        <!--Tab Bar Controller-->
         <scene sceneID="ywa-2C-RmH">
             <objects>
-                <tabBarController id="hKp-iL-0Pj" customClass="MyUITabBarController" customModule="QuizMe" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController id="hKp-iL-0Pj" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="ksO-iw-4Af"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="vx3-xc-7I1">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>

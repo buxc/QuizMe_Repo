@@ -23,7 +23,12 @@ var running_question_timers = [Int : Bool]() //tells you whether or not a timer 
 var running_set_timers = [Int : Bool]()//tells you whether or not a timer has started for particular set
 let notification_key = "switch_visibility"
 let notification_key_login = "switch_login_visibility"
-
+let notification_key_reply = "user_answered"
+let notification_key_seeAnswer = "see answer"
+let category_id = "category"
+let notification_result = "result"
+let notification_question = "question"
+let wrong_cat_id = "wrong_cat"
 /**
 Get_Request
 
