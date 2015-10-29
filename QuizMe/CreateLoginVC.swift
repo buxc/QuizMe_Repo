@@ -14,7 +14,6 @@ import UIKit
 **/
 class CreateLoginVC: UIViewController, UITextFieldDelegate {
 
-    @IBOutlet var lbError: UILabel!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword1: UITextField!
@@ -22,26 +21,17 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "clearFields", name: notification_key_login, object: nil)
 
         // Do any additional setup after loading the view.
     }
 
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func clearFields(){
+        tfUsername.text = ""
+        tfPassword1.text = ""
+        tfPassword2.text = ""
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 /**
         PassordsMatch
         Checks to see if passwords match and meet conditions
@@ -53,8 +43,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             return true
         }
         else{
-            lbError.hidden = false
-            lbError.text = "Error: Password mismatch"
+            alertUser("Password mismatch")
             return false
         }
     }
@@ -81,8 +70,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
                         }
                         else{
                             dispatch_async(dispatch_get_main_queue(), {
-                                self.lbError.text = "Error: Username taken"
-                                self.lbError.hidden = false
+                                self.alertUser("Username taken")
                                 self.aiSpinner.stopAnimating()
                             })
                         }
@@ -93,6 +81,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         }
         task.resume()
     }
+
 /**
     CreateUser
     
@@ -108,7 +97,8 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
                 return
             }
             dispatch_async(dispatch_get_main_queue(), {
-                self.navigationController?.popToRootViewControllerAnimated(true)
+                self.alertUser("Username created")
+                NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
             })
             
         }
@@ -116,7 +106,6 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     }
     @IBAction func btSubmit_OnClick(sender: AnyObject) {
         if !passwordsMatch(){
-            //display error message
             return
         }
         queryUser()
@@ -129,5 +118,16 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
+    }
+    /**
+     AlertUser
+     displays an alertbox showing passed in message with an "ok" button
+     
+     @arg message to be displayed to user
+     **/
+    func alertUser(message:String){
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
     }
 }

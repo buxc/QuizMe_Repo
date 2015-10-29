@@ -22,6 +22,7 @@ var USERNAME = ""
 var running_question_timers = [Int : Bool]() //tells you whether or not a timer has started for particular question
 var running_set_timers = [Int : Bool]()//tells you whether or not a timer has started for particular set
 let notification_key = "switch_visibility"
+let notification_key_login = "switch_login_visibility"
 
 /**
 Get_Request

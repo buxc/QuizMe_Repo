@@ -79,10 +79,12 @@ class CreateVC: UIViewController, UITextViewDelegate {
     func switchEmbeddedVisibility(){
         if cvView.hidden == true{
             cvView.hidden = false
+            tvTextView.editable = false
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
         }
         else{
             cvView.hidden = true
+            tvTextView.editable = true
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
         }
     }

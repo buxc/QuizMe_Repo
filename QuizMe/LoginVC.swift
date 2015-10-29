@@ -14,6 +14,8 @@ import UIKit
 **/
 class LoginVC: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet var btLogin: UIButton!
+    @IBOutlet var cvView: UIView!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword: UITextField!
@@ -23,12 +25,21 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key_login, object: nil)
         // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func switchEmbeddedVisibility(){
+        if cvView.hidden == true{
+            cvView.hidden = false
+            btLogin.enabled = false
+            view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
+        }
+        else{
+            cvView.hidden = true
+            btLogin.enabled = true
+            view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
+        }
     }
     func dismissKeyboard(){
         view.endEditing(true)
@@ -126,5 +137,8 @@ func submitRequest(){
         let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
+    }
+    @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
     }
 }
