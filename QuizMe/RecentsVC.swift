@@ -18,6 +18,9 @@ class RecentsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if USERNAME == ""{
+            performSegueWithIdentifier("logIn", sender: self)
+        }
     }
     override func viewWillAppear(animated: Bool) {
         questions.removeAll()

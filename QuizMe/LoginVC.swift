@@ -93,7 +93,7 @@ func submitRequest(){
                                                 UID = Int(id)!
                                                 USERNAME = name
                                                 self.clearFields()
-                                                self.performSegueWithIdentifier("loggedIn", sender: self)
+                                                self.dismissViewControllerAnimated(true, completion: nil)
                                             }
                                             if self.count == 0{
                                                     self.alertUser("Incorrect password")
