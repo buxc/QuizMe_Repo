@@ -127,6 +127,17 @@ func submitRequest(){
         self.view.endEditing(true)
         return false
     }
+    @IBAction func btStopAsking_OnClick(sender: AnyObject) {
+        let confirmBox = UIAlertController(title: "Stop all questions being sent to this device?", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+        confirmBox.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action: UIAlertAction!) in
+            self.stopAsking()
+        }))
+        
+        confirmBox.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
+            return
+        }))
+        presentViewController(confirmBox, animated: true, completion: nil)
+    }
     /**
     AlertUser
     displays an alertbox showing passed in message with an "ok" button
@@ -141,4 +152,21 @@ func submitRequest(){
     @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
     }
+    func stopAsking(){
+        let send_this = "device='\(device_token)'"
+        let request = getRequest(send_this, urlString: STOP_ASKING_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            dispatch_async(dispatch_get_main_queue(), {
+                self.alertUser("Questions cancelled")
+            })
+            
+        }
+        task.resume()
+    }
+
 }

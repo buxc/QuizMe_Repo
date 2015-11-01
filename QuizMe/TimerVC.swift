@@ -29,7 +29,7 @@ class TimerVC: UIViewController {
     func sendAnswer(){
         let notification = UILocalNotification()
         notification.alertBody = question.aText
-        //notification.category = wrong_cat_id
+        notification.category = okCat_id
         notification.fireDate = NSDate(timeIntervalSinceNow: 0)
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
     }
@@ -47,15 +47,15 @@ class TimerVC: UIViewController {
     }
     func sendNotificationResult(verdict:String){
         let notification = UILocalNotification()
-        notification.category = notification_result
-        notification.fireDate = NSDate(timeIntervalSinceNow: 0)
         if verdict == "correct"{
             notification.alertBody = "Correct!"
+            notification.category = notification_result
         }
         else{
             notification.alertBody = "Wrong"
             notification.category = wrong_cat_id
         }
+        notification.fireDate = NSDate(timeIntervalSinceNow: 0)
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
     }
     override func didReceiveMemoryWarning() {

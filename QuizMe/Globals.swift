@@ -16,8 +16,14 @@ let QUERY_USERNAME_PHP = "\(EXTERNAL_IP)/QuizMe/queryUsername.php"
 let CREATE_USER_PHP = "\(EXTERNAL_IP)/QuizMe/createUser.php"
 let CREATE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/createQuestion.php"
 let GET_QUESTIONS_PHP = "\(EXTERNAL_IP)/QuizMe/getQuestions.php"
+let CHECK_ANSWER_PHP = "\(EXTERNAL_IP)/QuizMe/checkAnswer.php"
+let GET_ANSWER_PHP = "\(EXTERNAL_IP)/QuizMe/getAnswer.php"
+let REGISTER_QUESTION_FOR_PUSH_PHP = "\(EXTERNAL_IP)/QuizMe/registerQuestionForPush.php"
+let GET_REGISTERED_QUESTIONS_PHP = "\(EXTERNAL_IP)/QuizMe/getRegisteredQuestions.php"
+let STOP_ASKING_PHP = "\(EXTERNAL_IP)/QuizMe/stopAsking.php"
 
 var UID = 0
+var device_token = ""
 var USERNAME = ""
 var running_question_timers = [Int : Bool]() //tells you whether or not a timer has started for particular question
 var running_set_timers = [Int : Bool]()//tells you whether or not a timer has started for particular set
@@ -28,7 +34,9 @@ let notification_key_seeAnswer = "see answer"
 let category_id = "category"
 let notification_result = "result"
 let notification_question = "question"
+let notification_answer = "answer"
 let wrong_cat_id = "wrong_cat"
+let okCat_id = "okcat"
 /**
 Get_Request
 
@@ -46,4 +54,5 @@ func getRequest(requestString : String, urlString : String) -> NSMutableURLReque
     request.HTTPBody = requestString.dataUsingEncoding(NSUTF8StringEncoding)
     return request
 }
+
 
