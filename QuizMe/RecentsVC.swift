@@ -15,17 +15,20 @@ class RecentsVC: UIViewController {
     var qidsScheduledForPush = [Int]()
     @IBOutlet var tvTable: UITableView!
     @IBOutlet var scTypeDisplayed: UISegmentedControl!
+    @IBOutlet var aiSpinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         if USERNAME == ""{
+            /*
+            Causes 2 warnings: "Presenting view controllers on detached view controllers is discouraged" and
+            379ae97e0b0b7b98d3521
+            2015-11-04 22:43:06.371 QuizMe[686:195977] Unbalanced calls to begin/end appearance transitions for <UITabBarController:
+            */
             performSegueWithIdentifier("logIn", sender: self)
         }
     }
     override func viewWillAppear(animated: Bool) {
-        questions.removeAll()
-        qidsScheduledForPush.removeAll()
-        scheduledForPush.removeAll()
         getQuestions()
     }
     func isScheduled(qid:Int) -> Bool{
@@ -50,6 +53,7 @@ class RecentsVC: UIViewController {
                 scheduledForPush[i] = false
             }
         }
+        aiSpinner.stopAnimating()
     }
     func getScheduledQuestions(){
         let send_this = "device='\(device_token)'"
@@ -80,12 +84,19 @@ class RecentsVC: UIViewController {
     }
 
     func getQuestions(){
+        if(UID == 0){
+            return
+        }
+        aiSpinner.startAnimating()
+        questions.removeAll()
+        qidsScheduledForPush.removeAll()
+        scheduledForPush.removeAll()
         let send_this = "uid=\(UID)"
         let request = getRequest(send_this, urlString: GET_QUESTIONS_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue
             if error != nil{
-                print("Error with creating login")
+                print("Error with getting questions")
                 return
             }
             if let data = data{
@@ -113,6 +124,21 @@ class RecentsVC: UIViewController {
         }
         task.resume()
     }
+    
+    func deleteQuestion(qid:Int){
+        let send_this = "qid=\(qid)"
+        let request = getRequest(send_this, urlString: DELETE_QUESTION_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in
+            if error != nil{
+                print("Error with order request")
+                return
+            }
+            self.getQuestions()
+        }
+        task.resume()
+    }
+    
     // MARK: - Table view data source
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -125,6 +151,11 @@ class RecentsVC: UIViewController {
         return questions.count
     }
 
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            deleteQuestion(questions[indexPath.row].qid)
+        }
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("Basic") as! BasicTableViewCell?

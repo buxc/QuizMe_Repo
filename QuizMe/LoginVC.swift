@@ -14,6 +14,8 @@ import UIKit
 **/
 class LoginVC: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet var btCreateAccount: UIButton!
+    @IBOutlet var btStopAsking: UIButton!
     @IBOutlet var btLogin: UIButton!
     @IBOutlet var cvView: UIView!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
@@ -23,6 +25,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        cvView.layer.borderColor = UIColor(netHex: 0x2DE2EF).CGColor
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key_login, object: nil)
@@ -32,12 +35,16 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     func switchEmbeddedVisibility(){
         if cvView.hidden == true{
             cvView.hidden = false
-            btLogin.enabled = false
+            btLogin.hidden = true
+            btStopAsking.hidden = true
+            btCreateAccount.hidden = true
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
         }
         else{
             cvView.hidden = true
-            btLogin.enabled = true
+            btLogin.hidden = false
+            btStopAsking.hidden = false
+            btCreateAccount.hidden = false
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
         }
     }
@@ -75,7 +82,8 @@ func submitRequest(){
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue
             if error != nil{
-                print("Error with creating login")
+                //self.alertUser("Backend error")
+                print("Login error")
                 return
             }
             if let data = data{
@@ -115,9 +123,6 @@ func submitRequest(){
         }
         task.resume()
     }
-    @IBAction func btLogIn_OnClick(sender: AnyObject) {
-        submitRequest()
-    }
 /**
     Text_Field_Should_Return
     
@@ -127,6 +132,9 @@ func submitRequest(){
         self.view.endEditing(true)
         return false
     }
+/**
+     BtStopAsking_OnClick
+**/
     @IBAction func btStopAsking_OnClick(sender: AnyObject) {
         let confirmBox = UIAlertController(title: "Stop all questions being sent to this device?", message: "", preferredStyle: UIAlertControllerStyle.Alert)
         confirmBox.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action: UIAlertAction!) in
@@ -149,9 +157,16 @@ func submitRequest(){
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
     }
+/**
+     BtCreateAccount_OnClick
+**/
     @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
+        //performSegueWithIdentifier("createLogin", sender: self)
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
     }
+/**
+     StopAsking
+**/
     func stopAsking(){
         let send_this = "device='\(device_token)'"
         let request = getRequest(send_this, urlString: STOP_ASKING_PHP)

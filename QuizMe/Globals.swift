@@ -21,6 +21,7 @@ let GET_ANSWER_PHP = "\(EXTERNAL_IP)/QuizMe/getAnswer.php"
 let REGISTER_QUESTION_FOR_PUSH_PHP = "\(EXTERNAL_IP)/QuizMe/registerQuestionForPush.php"
 let GET_REGISTERED_QUESTIONS_PHP = "\(EXTERNAL_IP)/QuizMe/getRegisteredQuestions.php"
 let STOP_ASKING_PHP = "\(EXTERNAL_IP)/QuizMe/stopAsking.php"
+let DELETE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/deleteQuestion.php"
 
 var UID = 0
 var device_token = ""
@@ -55,4 +56,16 @@ func getRequest(requestString : String, urlString : String) -> NSMutableURLReque
     return request
 }
 
-
+extension UIColor {
+    convenience init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
+        
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+    
+    convenience init(netHex:Int) {
+        self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
+    }
+}

@@ -17,6 +17,7 @@ import UIKit
 **/
 class CreateVC: UIViewController, UITextViewDelegate {
 
+    @IBOutlet var btCreateNewSet: UIButton!
     @IBOutlet var cvView: UIView!
     @IBOutlet var lbLabel: UILabel!
     @IBOutlet var tvTextView: UITextView!
@@ -27,6 +28,7 @@ class CreateVC: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        cvView.layer.borderColor = UIColor(netHex: 0x2DE2EF).CGColor
         tvTextView.becomeFirstResponder()
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
@@ -56,6 +58,7 @@ class CreateVC: UIViewController, UITextViewDelegate {
 
 /**
     SubmitQuestion
+     /***SINGLE QUOTES INCLUDED IN Q.TEXT OR A.TEXT WILL MAKE REQUEST FAIL**/
 **/
     func submitQuestion(){
         let send_this = "question='\(question.qText)'&answer='\(question.aText)'&uid=\(UID)"
@@ -80,11 +83,13 @@ class CreateVC: UIViewController, UITextViewDelegate {
         if cvView.hidden == true{
             cvView.hidden = false
             tvTextView.editable = false
+            btCreateNewSet.hidden = true
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
         }
         else{
             cvView.hidden = true
             tvTextView.editable = true
+            btCreateNewSet.hidden = false
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
         }
     }

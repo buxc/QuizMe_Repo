@@ -26,7 +26,12 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         // Do any additional setup after loading the view.
     }
 
-
+/**
+     btCancel_OnClick
+**/
+    @IBAction func btCancel_OnClick(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
+    }
     func clearFields(){
         tfUsername.text = ""
         tfPassword1.text = ""
