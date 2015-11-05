@@ -48,7 +48,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             return true
         }
         else{
-            alertUser("Password mismatch")
+            alertUser("Password mismatch",you:self)
             return false
         }
     }
@@ -75,7 +75,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
                         }
                         else{
                             dispatch_async(dispatch_get_main_queue(), {
-                                self.alertUser("Username taken")
+                                alertUser("Username taken",you:self)
                                 self.aiSpinner.stopAnimating()
                             })
                         }
@@ -102,7 +102,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
                 return
             }
             dispatch_async(dispatch_get_main_queue(), {
-                self.alertUser("Username created")
+                alertUser("Username created",you:self)
                 NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
             })
             
@@ -123,16 +123,5 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
-    }
-    /**
-     AlertUser
-     displays an alertbox showing passed in message with an "ok" button
-     
-     @arg message to be displayed to user
-     **/
-    func alertUser(message:String){
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
     }
 }

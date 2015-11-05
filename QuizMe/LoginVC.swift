@@ -104,7 +104,7 @@ func submitRequest(){
                                                 self.dismissViewControllerAnimated(true, completion: nil)
                                             }
                                             if self.count == 0{
-                                                    self.alertUser("Incorrect password")
+                                                alertUser("Incorrect password",you:self)
                                             }
                                             
                                            }
@@ -113,7 +113,7 @@ func submitRequest(){
                                 }
                             }
                             else{//if username doesn't exist
-                                self.alertUser("Username does not exist")
+                                alertUser("Username does not exist",you:self)
                             }
                         })
                     }
@@ -146,17 +146,7 @@ func submitRequest(){
         }))
         presentViewController(confirmBox, animated: true, completion: nil)
     }
-    /**
-    AlertUser
-    displays an alertbox showing passed in message with an "ok" button
     
-    @arg message to be displayed to user
-    **/
-    func alertUser(message:String){
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
-    }
 /**
      BtCreateAccount_OnClick
 **/
@@ -177,7 +167,7 @@ func submitRequest(){
                 return
             }
             dispatch_async(dispatch_get_main_queue(), {
-                self.alertUser("Questions cancelled")
+                alertUser("Questions cancelled",you: self)
             })
             
         }

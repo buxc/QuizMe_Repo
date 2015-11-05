@@ -55,7 +55,17 @@ func getRequest(requestString : String, urlString : String) -> NSMutableURLReque
     request.HTTPBody = requestString.dataUsingEncoding(NSUTF8StringEncoding)
     return request
 }
-
+/**
+ AlertUser
+ displays an alertbox showing passed in message with an "ok" button
+ 
+ @arg message to be displayed to user
+ **/
+func alertUser(message:String,you:UIViewController){
+    let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+    alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+    you.presentViewController(alert, animated: true, completion: nil)
+}
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")
