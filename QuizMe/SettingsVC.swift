@@ -32,6 +32,7 @@ class SettingsVC: UIViewController {
     func logOut(){
         UID = 0
         USERNAME = ""
+        NSNotificationCenter.defaultCenter().postNotificationName("setFetchedKey", object: self)
         performSegueWithIdentifier("logOut", sender: self)
     }
     

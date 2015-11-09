@@ -11,7 +11,9 @@ import UIKit
 class SelectedCellVC: UIViewController {
 
     var question = Question()
-    var queued = false
+    var questionTemp = ""
+    var answerTemp = ""
+    var queued = false  //true if question scheduled for push notification
     var timer = NSTimer()
     var state = "q"
     
@@ -21,6 +23,8 @@ class SelectedCellVC: UIViewController {
    
     override func viewDidLoad() {
         super.viewDidLoad()
+        questionTemp = question.qText
+        answerTemp = question.aText
         tvText.text = question.qText
         if queued == true{
             swAskMe.on = true
@@ -53,16 +57,26 @@ class SelectedCellVC: UIViewController {
     }
     @IBAction func btFlip_OnClick(sender: AnyObject) {
         if state == "q"{
+            questionTemp = tvText.text
             tvText.text = question.aText
             state = "a"
         }
         else{
+            answerTemp = tvText.text
             tvText.text = question.qText
             state = "q"
         }
     }
     
     @IBAction func btSaveChanges_OnClick(sender: AnyObject) {
+        if state == "q"{
+            questionTemp = tvText.text
+        }
+        else{
+            answerTemp = tvText.text
+        }
+        question.qText = questionTemp
+        question.aText = answerTemp
     }
     func regQuestion(cond:Int){
         let send_this = "device='\(device_token)'&qid=\(question.qid)&cond=\(cond)"
@@ -81,7 +95,7 @@ class SelectedCellVC: UIViewController {
                 else{
                     message = "Question unscheduled!"
                 }
-                self.alertUser(message)
+                alertUser(message,you: self)
             })
             
         }
@@ -96,16 +110,5 @@ class SelectedCellVC: UIViewController {
             regQuestion(1)
             queued = true
         }
-    }
-    /**
-     AlertUser
-     displays an alertbox showing passed in message with an "ok" button
-     
-     @arg message to be displayed to user
-     **/
-    func alertUser(message:String){
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
     }
 }

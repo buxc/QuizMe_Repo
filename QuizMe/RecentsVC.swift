@@ -10,15 +10,17 @@ import UIKit
 
 class RecentsVC: UIViewController {
 
-    var questions = [Question]()
-    var scheduledForPush = [Bool]()
-    var qidsScheduledForPush = [Int]()
+    var fetched = false     //if have fetched questions from server
+    var questions = [Question]()    //array of questions from server
+    var scheduledForPush = [Bool]()   //parallel array with questions indicating if scheduled
+    var qidsScheduledForPush = [Int]()  //qids of questions scheduled for push notifications
     @IBOutlet var tvTable: UITableView!
     @IBOutlet var scTypeDisplayed: UISegmentedControl!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "setFetched", name: "setFetchedKey", object: nil)
         if USERNAME == ""{
             /*
             Causes 2 warnings: "Presenting view controllers on detached view controllers is discouraged" and
@@ -28,9 +30,29 @@ class RecentsVC: UIViewController {
             performSegueWithIdentifier("logIn", sender: self)
         }
     }
-    override func viewWillAppear(animated: Bool) {
-        getQuestions()
+    /**
+        When user logs out via Settings, this fires to reset fetched to false
+    **/
+    func setFetched(){
+        fetched = false
     }
+    override func viewWillAppear(animated: Bool) {
+        /*This way, questions are fetched only once from the server, after user logs in*/
+        if USERNAME != "" {
+            if fetched == false{
+                getQuestions()
+                fetched = true
+                return
+            }
+            tvTable.reloadData() //always reload the tableview
+        }
+    }
+    /**
+        IsScheduled
+        Determines whether or not question is scheduled for pushing
+        @param qid of question of interest
+        @return true is scheduled, false if not
+    **/
     func isScheduled(qid:Int) -> Bool{
         let limit = qidsScheduledForPush.count
         var i = 0
@@ -45,6 +67,10 @@ class RecentsVC: UIViewController {
         }
         return false
     }
+    /**
+     ConfigureScheduleForPush
+     Sets up parallel boolean array scheduledForPush
+    **/
     func configureScheduleForPush(){
         for(var i = 0; i < questions.count;i++){
             if isScheduled(questions[i].qid) == true{
@@ -55,6 +81,11 @@ class RecentsVC: UIViewController {
         }
         aiSpinner.stopAnimating()
     }
+    /**
+     GetScheduledQuestions
+     Requests qids of all scheduled questions for this device and stores them
+     in qidsScheduledForPush
+    **/
     func getScheduledQuestions(){
         let send_this = "device='\(device_token)'"
         let request = getRequest(send_this, urlString: GET_REGISTERED_QUESTIONS_PHP)
@@ -82,7 +113,11 @@ class RecentsVC: UIViewController {
         }
         task.resume()
     }
-
+    /**
+     GetQuestions
+     Requests all questions from server associated with logged in user. 
+     Stores them in questions array
+    **/
     func getQuestions(){
         if(UID == 0){
             return
@@ -124,8 +159,12 @@ class RecentsVC: UIViewController {
         }
         task.resume()
     }
-    
-    func deleteQuestion(qid:Int){
+    /**
+     DeleteQuestion
+     Deletes question from server
+    **/
+    func deleteQuestion(qid:Int,index:Int){
+        aiSpinner.startAnimating()
         let send_this = "qid=\(qid)"
         let request = getRequest(send_this, urlString: DELETE_QUESTION_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
@@ -134,7 +173,12 @@ class RecentsVC: UIViewController {
                 print("Error with order request")
                 return
             }
-            self.getQuestions()
+            dispatch_async(dispatch_get_main_queue(), {
+                self.questions.removeAtIndex(index)
+                self.tvTable.reloadData()
+                self.aiSpinner.stopAnimating()
+            })
+            
         }
         task.resume()
     }
@@ -153,7 +197,7 @@ class RecentsVC: UIViewController {
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            deleteQuestion(questions[indexPath.row].qid)
+            deleteQuestion(questions[indexPath.row].qid,index: indexPath.row)
         }
     }
     
@@ -172,11 +216,7 @@ class RecentsVC: UIViewController {
         let indexPath = tvTable.indexPathForSelectedRow
         if let nextView = segue.destinationViewController as? SelectedCellVC{
             nextView.question = questions[indexPath!.row]
-            if scheduledForPush[indexPath!.row] == true{
-                nextView.queued = true
-            }else{
-                nextView.queued = false
-            }
+            nextView.queued = scheduledForPush[indexPath!.row]
         }
     }
     

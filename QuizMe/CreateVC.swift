@@ -70,7 +70,8 @@ class CreateVC: UIViewController, UITextViewDelegate {
                 return
             }
             dispatch_async(dispatch_get_main_queue(), {
-                self.alertUser("Question created!")
+                alertUser("Question created!",you:self)
+                NSNotificationCenter.defaultCenter().postNotificationName("setFetchedKey", object: self)
             })
         }
         task.resume()
@@ -131,17 +132,7 @@ class CreateVC: UIViewController, UITextViewDelegate {
         tvTextView.becomeFirstResponder()
         btGoBack.hidden = true
     }
-/**
-    AlertUser
-    displays an alertbox showing passed in message with an "ok" button
-    
-    @arg message to be displayed to user
-**/
-    func alertUser(message:String){
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
-    }
+
 /**
     Lets keyboard dissapear after typing
 **/
