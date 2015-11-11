@@ -13,7 +13,7 @@ class SelectedCellVC: UIViewController {
     var question = Question()
     var questionTemp = ""
     var answerTemp = ""
-    var queued = false  //true if question scheduled for push notification
+    var queued : BoolWrapper?  //true if question scheduled for push notification
     var timer = NSTimer()
     var state = "q"
     
@@ -26,7 +26,7 @@ class SelectedCellVC: UIViewController {
         questionTemp = question.qText
         answerTemp = question.aText
         tvText.text = question.qText
-        if queued == true{
+        if queued?.value == true{
             swAskMe.on = true
         }else{
             swAskMe.on = false
@@ -50,10 +50,10 @@ class SelectedCellVC: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let nextView = segue.destinationViewController as? TimerVC{
+        /*if let nextView = segue.destinationViewController as? TimerVC{
             nextView.question = question
             nextView.timer = timer
-        }
+        }*/
     }
     @IBAction func btFlip_OnClick(sender: AnyObject) {
         if state == "q"{
@@ -102,13 +102,13 @@ class SelectedCellVC: UIViewController {
         task.resume()
     }
     @IBAction func swAskMe_Switched(sender: AnyObject) {
-        if queued == true{
+        if queued?.value == true{
             regQuestion(0)
-            queued = false
+            queued?.value = false
         }
         else{
             regQuestion(1)
-            queued = true
+            queued?.value = true
         }
     }
 }

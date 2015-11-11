@@ -70,6 +70,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         tfPassword.text = ""
         tfUsername.text = ""
     }
+
 /**
     SubmitRequest
     The fxn that talks to the server. Sends the inputted name and password from the
@@ -156,6 +157,7 @@ func submitRequest(){
     }
 /**
      StopAsking
+     Stops all push notifications to current device
 **/
     func stopAsking(){
         let send_this = "device='\(device_token)'"

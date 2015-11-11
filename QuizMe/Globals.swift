@@ -22,12 +22,12 @@ let REGISTER_QUESTION_FOR_PUSH_PHP = "\(EXTERNAL_IP)/QuizMe/registerQuestionForP
 let GET_REGISTERED_QUESTIONS_PHP = "\(EXTERNAL_IP)/QuizMe/getRegisteredQuestions.php"
 let STOP_ASKING_PHP = "\(EXTERNAL_IP)/QuizMe/stopAsking.php"
 let DELETE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/deleteQuestion.php"
+let GET_SETS_PHP = "\(EXTERNAL_IP)/QuizMe/getSets.php"
+let CREATE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/createSet.php"
 
 var UID = 0
 var device_token = ""
 var USERNAME = ""
-var running_question_timers = [Int : Bool]() //tells you whether or not a timer has started for particular question
-var running_set_timers = [Int : Bool]()//tells you whether or not a timer has started for particular set
 let notification_key = "switch_visibility"
 let notification_key_login = "switch_login_visibility"
 let notification_key_reply = "user_answered"

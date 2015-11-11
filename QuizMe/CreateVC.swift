@@ -15,7 +15,7 @@ import UIKit
 
     *BASICALLY FINISHED*
 **/
-class CreateVC: UIViewController, UITextViewDelegate {
+class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
     @IBOutlet var btCreateNewSet: UIButton!
     @IBOutlet var cvView: UIView!
@@ -23,8 +23,12 @@ class CreateVC: UIViewController, UITextViewDelegate {
     @IBOutlet var tvTextView: UITextView!
     @IBOutlet var btEnter: UIButton!
     @IBOutlet var btGoBack: UIButton!
+    @IBOutlet var pvSet: UIPickerView!
+    var fetched = false
+    
     var state = "q"
     var question = Question()
+    var sets = [QmSet]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +37,22 @@ class CreateVC: UIViewController, UITextViewDelegate {
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reFetchSets", name: "refetchSetsKey", object: nil)
         // Do any additional setup after loading the view.
+        
+    }
+    /**
+     reFetchSets
+    **/
+    func reFetchSets(){
+        getSets()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if fetched == false{
+            getSets()
+            fetched = true
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -132,7 +151,48 @@ class CreateVC: UIViewController, UITextViewDelegate {
         tvTextView.becomeFirstResponder()
         btGoBack.hidden = true
     }
-
+     /**
+     GetSets
+     Fetches user defined sets from server
+     **/
+    func getSets(){
+        sets.removeAll()
+        let send_this = "uid=\(UID)"
+        let request = getRequest(send_this, urlString: GET_SETS_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            if let data = data{
+                do{
+                    if let json = try NSJSONSerialization.JSONObjectWithData(data, options: [NSJSONReadingOptions.MutableContainers,NSJSONReadingOptions.AllowFragments]) as? NSArray{
+                        for dic in json{
+                            if case let id as String = dic["pid"]{
+                                if case let pname as String = dic["name"]{
+                                    if case let topic as String = dic["topic"]{
+                                        if case let priv as String = dic["private"]{
+                                            let temp = QmSet(pid: Int(id)!, name: pname, topic: topic, privat: priv,cr:UID)
+                                            self.sets.append(temp)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.pvSet.reloadAllComponents()
+                    })
+                }
+                catch let e as NSError {
+                    print(e)
+                }
+            }
+        }
+        task.resume()
+    }
 /**
     Lets keyboard dissapear after typing
 **/
@@ -145,5 +205,17 @@ class CreateVC: UIViewController, UITextViewDelegate {
     }
     @IBAction func btCreateNewSet_OnClick(sender: AnyObject) {
         switchEmbeddedVisibility()
+    }
+    // MARK: - PickerView methods
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return sets.count
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return sets[row].name
     }
 }

@@ -11,8 +11,9 @@ import UIKit
 class RecentsVC: UIViewController {
 
     var fetched = false     //if have fetched questions from server
+    var sets = [QmSet]()
     var questions = [Question]()    //array of questions from server
-    var scheduledForPush = [Bool]()   //parallel array with questions indicating if scheduled
+    var scheduledForPush = [BoolWrapper]()   //parallel array with questions indicating if scheduled
     var qidsScheduledForPush = [Int]()  //qids of questions scheduled for push notifications
     @IBOutlet var tvTable: UITableView!
     @IBOutlet var scTypeDisplayed: UISegmentedControl!
@@ -41,6 +42,7 @@ class RecentsVC: UIViewController {
         if USERNAME != "" {
             if fetched == false{
                 getQuestions()
+                getSets()
                 fetched = true
                 return
             }
@@ -74,9 +76,9 @@ class RecentsVC: UIViewController {
     func configureScheduleForPush(){
         for(var i = 0; i < questions.count;i++){
             if isScheduled(questions[i].qid) == true{
-                scheduledForPush[i] = true
+                scheduledForPush[i] = BoolWrapper(val: true)
             }else{
-                scheduledForPush[i] = false
+                scheduledForPush[i] = BoolWrapper(val: false)
             }
         }
         aiSpinner.stopAnimating()
@@ -144,7 +146,7 @@ class RecentsVC: UIViewController {
                                             if case let a as String = dic["answer_text"]{
                                                 let question = Question(qid: Int(qid)!, qText: q, aText: a, choices: nil)
                                                 self.questions.append(question)
-                                                self.scheduledForPush.append(false)
+                                                self.scheduledForPush.append(BoolWrapper(val:false))
                                             }
                                         }
                                     }
@@ -182,7 +184,42 @@ class RecentsVC: UIViewController {
         }
         task.resume()
     }
-    
+    /**
+     GetSets
+     Fetches user defined sets from server
+     **/
+    func getSets(){
+        let send_this = "uid=\(UID)"
+        let request = getRequest(send_this, urlString: GET_SETS_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            if let data = data{
+                do{
+                    if let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSArray{    //put response into JSON so can access like a dictionary
+                        for dic in json{
+                            if case let id as String = dic["pid"]{
+                                if case let pname as String = dic["name"]{
+                                    if case let topic as String = dic["topic"]{
+                                        if case let priv as String = dic["private"]{
+                                            let temp = QmSet(pid: Int(id)!, name: pname, topic: topic, privat: priv,cr:UID)
+                                            self.sets.append(temp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                catch _ as NSError {}
+            }
+        }
+        task.resume()
+    }
     // MARK: - Table view data source
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -192,7 +229,12 @@ class RecentsVC: UIViewController {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return questions.count
+        if scTypeDisplayed.selectedSegmentIndex == 0{
+            return questions.count
+        }
+        else{
+            return sets.count
+        }
     }
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -206,7 +248,14 @@ class RecentsVC: UIViewController {
         if(cell == nil){
             cell = BasicTableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Basic")
         }
-        cell!.lbQuestion.text = questions[indexPath.row].qText
+        if scTypeDisplayed.selectedSegmentIndex == 0{ //if questions selected
+            cell!.lbType.text = "Q:"
+            cell!.lbQuestion.text = questions[indexPath.row].qText
+        }
+        else{ //if sets selected
+            cell!.lbType.text = "Set:"
+            cell!.lbQuestion.text = sets[indexPath.row].name
+        }
         return cell!
     }
     // MARK: - Navigation
@@ -219,6 +268,10 @@ class RecentsVC: UIViewController {
             nextView.queued = scheduledForPush[indexPath!.row]
         }
     }
-    
-
+    /**
+     Fires when segmented control value changes(user clicks it)
+    **/
+    @IBAction func scTypeDisplayed_ValueChanged(sender: AnyObject) {
+        tvTable.reloadData()
+    }
 }
