@@ -12,23 +12,28 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    /**
+     RegisterForPushNotifications
+     My own function that creates all the different types of push notifications and their actions. For instance,
+     the type of push notification sent when asking a question has different qualities than that received after
+     answering a question.
+    **/
     func registerForPushNotifications(){
         let okAction = UIMutableUserNotificationAction()
-        okAction.identifier = notification_answer
+        okAction.identifier = notification_answer //creates the button/action labeled "Ok". Does nothing
         okAction.title = "Ok"
         okAction.activationMode = .Background
         okAction.authenticationRequired = false
         okAction.destructive = false
         okAction.behavior = .Default
-        let wrongAction = UIMutableUserNotificationAction()
+        let wrongAction = UIMutableUserNotificationAction() //creates the button/action labeled "See Answer"
         wrongAction.identifier = notification_result
         wrongAction.title = "See Answer"
         wrongAction.activationMode = .Background
         wrongAction.authenticationRequired = false
         wrongAction.destructive = false
         wrongAction.behavior = .Default
-        let replyAction = UIMutableUserNotificationAction()
+        let replyAction = UIMutableUserNotificationAction() //creates the action of allowing the user to reply directly though the notification itself. Called "Answer"
         replyAction.identifier = notification_question
         replyAction.title = "Answer"
         replyAction.activationMode = .Background
@@ -49,15 +54,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().registerForRemoteNotifications()
     }
+    /**
+     Application didRegisterForRemoteNoficationsWithDeviceToken
+     Gets called when push notification registration is successful. Set the global variable 'DEVICE_TOKEN' here.
+    **/
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        //reg device token somehow
-        //let currentInstallation = PFInstallation.currentInstallation()
         var device = String(deviceToken)
         device = device.substringWithRange(Range<String.Index>(start: device.startIndex.advancedBy(1), end: device.endIndex.advancedBy(-1)))
-        device = device.stringByReplacingOccurrencesOfString(" ", withString: "")
+        device = device.stringByReplacingOccurrencesOfString(" ", withString: "")//remove the quotes and shit
         DEVICE_TOKEN = device
         print(DEVICE_TOKEN)
     }
+    /**
+     Application didReceiveRemoteNotification
+     Gets called when a push notification is recieved and the user has the app open on screen.
+     **/
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject],fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         if let notification = userInfo["aps"] as? NSDictionary,
             let alert = notification["alert"] as? String{
@@ -77,9 +88,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Device token for push nots failed")
         print(error.description)
     }
+    /**
+     Application didFinishLaunchingWithOptions
+     Gets called when app boots. Where the phone registers for push notifications.
+    **/
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        //registerForNotifications(application)
         registerForPushNotifications()
         return true
     }
@@ -105,6 +118,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    /**
+     Application forRemoteNotification
+     Gets called when a push notification is received and the app is not on screen. Parses the payload from the server
+     and acts accordingly
+    **/
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
         if let payload = userInfo["aps"] as? NSDictionary{
             if let qid = payload["qid"] as? String{
@@ -120,6 +138,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         completionHandler()
     }
+    /**
+     ApplicationHandleWithIdentifierForLocalNotificationWithResponseInfoCompletionHandler
+     Gets called when a local notification is received, not a push notification. This serves no purpose anymore
+     because local notifications are no longer used in this app.
+    **/
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
         if identifier == notification_question{
             let reply = responseInfo[UIUserNotificationActionResponseTypedTextKey]
@@ -130,6 +153,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         completionHandler()
     }
+    /**
+     PushAnswer
+     Serves double duty. Either calls 'checkAnswer.php' or 'getAnswer.php'. checkAnswer checks user input in response
+     to a push notification and responds with either 'Wrong' or 'Correct!'. 
+     getAnswer is called if the input is incorrect and the user wants the answer.
+     All the logic of checking for correctness and whatnot is done serverside.
+    **/
     func pushAnswer(qid:String,answer:String,url:String){
         let send_this = "device=\(DEVICE_TOKEN)&qid=\(qid)&answer='\(answer)'"//note device token not in quotes
         let request = getRequest(send_this, urlString: url)

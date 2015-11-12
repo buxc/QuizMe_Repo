@@ -66,6 +66,9 @@ func alertUser(message:String,you:UIViewController){
     alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
     you.presentViewController(alert, animated: true, completion: nil)
 }
+/**
+ Extension to UIColor granting a function that gives a color from a hex string
+**/
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")

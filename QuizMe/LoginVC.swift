@@ -21,7 +21,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword: UITextField!
-    var count = 0
+    var count = 0       //1 if login successful. 0 otherwise
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +31,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key_login, object: nil)
         // Do any additional setup after loading the view.
     }
-
+    /**
+     SwitchEmbeddedVisibility
+     Responsible for updating the UI to allow the user to create a new login, or taking
+     that window away. Called when either the "create login" or "cancel" buttons are pushed.
+    **/
     func switchEmbeddedVisibility(){
         if cvView.hidden == true{
             cvView.hidden = false
@@ -48,6 +52,10 @@ class LoginVC: UIViewController, UITextFieldDelegate {
             view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(1)
         }
     }
+    /**
+     DissmissKeyboard
+     Simply allows the keyboard to vanish
+    **/
     func dismissKeyboard(){
         view.endEditing(true)
     }
@@ -97,7 +105,7 @@ func submitRequest(){
                                     if case let id as String = dic["uid"]{
                                     if case let name as String = dic["name"]{
                                         if case let pw as String = dic["password"]{
-                                            if self.tfPassword.text! == pw {
+                                            if self.tfPassword.text! == pw { //compare the passwords
                                                 self.count = 1
                                                 UID = Int(id)!
                                                 USERNAME = name
@@ -135,6 +143,7 @@ func submitRequest(){
     }
 /**
      BtStopAsking_OnClick
+     Button that has user confirm that they want all notifications to this device to stop
 **/
     @IBAction func btStopAsking_OnClick(sender: AnyObject) {
         let confirmBox = UIAlertController(title: "Stop all questions being sent to this device?", message: "", preferredStyle: UIAlertControllerStyle.Alert)
@@ -152,7 +161,6 @@ func submitRequest(){
      BtCreateAccount_OnClick
 **/
     @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
-        //performSegueWithIdentifier("createLogin", sender: self)
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
     }
 /**
