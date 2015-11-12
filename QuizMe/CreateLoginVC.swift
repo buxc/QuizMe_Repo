@@ -31,6 +31,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
 **/
     @IBAction func btCancel_OnClick(sender: AnyObject) {
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
+        pushAnswer("13", answer: "b", url: CHECK_ANSWER_PHP)
     }
     func clearFields(){
         tfUsername.text = ""
@@ -123,5 +124,17 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
+    }
+    func pushAnswer(qid:String,answer:String,url:String){
+        let send_this = "device=\(DEVICE_TOKEN)&qid=\(qid)&answer='\(answer)'"//note device token not in quotes
+        let request = getRequest(send_this, urlString: url)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data,response,error) in
+            if error != nil{
+                print("Error with \(url)")
+                return
+            }
+        }
+        task.resume()
     }
 }

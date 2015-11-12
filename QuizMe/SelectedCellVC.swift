@@ -79,7 +79,7 @@ class SelectedCellVC: UIViewController {
         question.aText = answerTemp
     }
     func regQuestion(cond:Int){
-        let send_this = "device='\(device_token)'&qid=\(question.qid)&cond=\(cond)"
+        let send_this = "device='\(DEVICE_TOKEN)'&qid=\(question.qid)&cond=\(cond)"
         let request = getRequest(send_this, urlString: REGISTER_QUESTION_FOR_PUSH_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue

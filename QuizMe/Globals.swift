@@ -26,7 +26,7 @@ let GET_SETS_PHP = "\(EXTERNAL_IP)/QuizMe/getSets.php"
 let CREATE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/createSet.php"
 
 var UID = 0
-var device_token = ""
+var DEVICE_TOKEN = ""
 var USERNAME = ""
 let notification_key = "switch_visibility"
 let notification_key_login = "switch_login_visibility"

@@ -160,7 +160,7 @@ func submitRequest(){
      Stops all push notifications to current device
 **/
     func stopAsking(){
-        let send_this = "device='\(device_token)'"
+        let send_this = "device='\(DEVICE_TOKEN)'"
         let request = getRequest(send_this, urlString: STOP_ASKING_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue

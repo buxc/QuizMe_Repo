@@ -55,8 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var device = String(deviceToken)
         device = device.substringWithRange(Range<String.Index>(start: device.startIndex.advancedBy(1), end: device.endIndex.advancedBy(-1)))
         device = device.stringByReplacingOccurrencesOfString(" ", withString: "")
-        device_token = device
-        print(device_token)
+        DEVICE_TOKEN = device
+        print(DEVICE_TOKEN)
     }
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject],fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         if let notification = userInfo["aps"] as? NSDictionary,
@@ -131,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler()
     }
     func pushAnswer(qid:String,answer:String,url:String){
-        let send_this = "qid=\(qid)&answer='\(answer)'"
+        let send_this = "device=\(DEVICE_TOKEN)&qid=\(qid)&answer='\(answer)'"//note device token not in quotes
         let request = getRequest(send_this, urlString: url)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data,response,error) in
