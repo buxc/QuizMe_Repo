@@ -172,7 +172,7 @@ class RecentsVC: UIViewController {
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in
             if error != nil{
-                print("Error with order request")
+                //alertUser()
                 return
             }
             dispatch_async(dispatch_get_main_queue(), {
@@ -189,6 +189,7 @@ class RecentsVC: UIViewController {
      Fetches user defined sets from server
      **/
     func getSets(){
+        sets.removeAll()
         let send_this = "uid=\(UID)"
         let request = getRequest(send_this, urlString: GET_SETS_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
@@ -253,7 +254,7 @@ class RecentsVC: UIViewController {
             cell!.lbQuestion.text = questions[indexPath.row].qText
         }
         else{ //if sets selected
-            cell!.lbType.text = "Set:"
+            cell!.lbType.text = "S:"
             cell!.lbQuestion.text = sets[indexPath.row].name
         }
         return cell!

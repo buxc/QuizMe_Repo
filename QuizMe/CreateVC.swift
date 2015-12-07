@@ -80,7 +80,8 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
      /***SINGLE QUOTES INCLUDED IN Q.TEXT OR A.TEXT WILL MAKE REQUEST FAIL**/
 **/
     func submitQuestion(){
-        let send_this = "question='\(question.qText)'&answer='\(question.aText)'&uid=\(UID)"
+        let qText = formatStringRemoveQuotes(question.qText)
+        let send_this = "question='\(qText)'&answer='\(question.aText)'&uid=\(UID)"
         let request = getRequest(send_this, urlString: CREATE_QUESTION_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue

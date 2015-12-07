@@ -82,3 +82,10 @@ extension UIColor {
         self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
 }
+/**
+    FormatStringRemoveQuotes
+**/
+func formatStringRemoveQuotes(string:String) ->String{
+    
+    return string.stringByReplacingOccurrencesOfString("'", withString: "")
+}
