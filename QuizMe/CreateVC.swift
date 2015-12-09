@@ -17,6 +17,12 @@ import UIKit
 **/
 class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
+    //MARK: - Database members
+    var fetched = false
+    var state = "q"
+    var question = Question()
+    var sets = [QmSet]()
+    //MARK: - IBOutlets
     @IBOutlet var btCreateNewSet: UIButton!
     @IBOutlet var cvView: UIView!
     @IBOutlet var lbLabel: UILabel!
@@ -24,12 +30,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     @IBOutlet var btEnter: UIButton!
     @IBOutlet var btGoBack: UIButton!
     @IBOutlet var pvSet: UIPickerView!
-    var fetched = false
-    
-    var state = "q"
-    var question = Question()
-    var sets = [QmSet]()
-    
+    //MARK: - UIViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
         cvView.layer.borderColor = UIColor(netHex: 0x2DE2EF).CGColor
@@ -41,12 +42,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
         // Do any additional setup after loading the view.
         
     }
-    /**
-     reFetchSets
-    **/
-    func reFetchSets(){
-        getSets()
-    }
+
     
     override func viewWillAppear(animated: Bool) {
         if fetched == false{
@@ -59,7 +55,17 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+    //MARK: - General
+    /**
+     reFetchSets
+     **/
+    func reFetchSets(){
+        getSets()
+    }
+    /**
+     dismissKeyboard
+     Allows keyboard to disappear
+    **/
     func dismissKeyboard(){
         view.endEditing(true)
     }
@@ -74,28 +80,8 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
         }
         return false
     }
-
-/**
-    SubmitQuestion
-     /***SINGLE QUOTES INCLUDED IN Q.TEXT OR A.TEXT WILL MAKE REQUEST FAIL**/
-**/
-    func submitQuestion(){
-        let qText = formatStringRemoveQuotes(question.qText)
-        let send_this = "question='\(qText)'&answer='\(question.aText)'&uid=\(UID)"
-        let request = getRequest(send_this, urlString: CREATE_QUESTION_PHP)
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
-            (data, response, error) in  //all this happens once request has been completed, in another queue
-            if error != nil{
-                print("Error with creating login")
-                return
-            }
-            dispatch_async(dispatch_get_main_queue(), {
-                alertUser("Question created!",you:self)
-                NSNotificationCenter.defaultCenter().postNotificationName("setFetchedKey", object: self)
-            })
-        }
-        task.resume()
-}
+    
+    //MARK: - UI stuff
 /**
      SwitchEmbeddedVisibility
      Switches visibility of view containing new set shit
@@ -138,19 +124,27 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
             btGoBack.hidden = true
         }
     }
-    @IBAction func btCreate_OnClick(sender: AnyObject) {
-        if(!inputGood()){
-            //display error
-            return
+    //MARK: - Database interaction
+    /**
+    SubmitQuestion
+    /***SINGLE QUOTES INCLUDED IN Q.TEXT OR A.TEXT WILL MAKE REQUEST FAIL**/
+    **/
+    func submitQuestion(){
+        let qText = formatStringRemoveQuotes(question.qText)
+        let send_this = "question='\(qText)'&answer='\(question.aText)'&uid=\(UID)"
+        let request = getRequest(send_this, urlString: CREATE_QUESTION_PHP)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            dispatch_async(dispatch_get_main_queue(), {
+                alertUser("Question created!",you:self)
+                NSNotificationCenter.defaultCenter().postNotificationName("setFetchedKey", object: self)
+            })
         }
-        changeState()
-    }
-    @IBAction func btGoBack_onClick(sender: AnyObject) {
-        state = "q"
-        lbLabel.text = "Enter Question:"
-        tvTextView.text = question.qText
-        tvTextView.becomeFirstResponder()
-        btGoBack.hidden = true
+        task.resume()
     }
      /**
      GetSets
@@ -194,20 +188,26 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
         }
         task.resume()
     }
-/**
-    Lets keyboard dissapear after typing
-**/
-    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        if(text == "\n") {
-            textView.resignFirstResponder()
-            return false
+    //MARK: - Button presses
+    @IBAction func btCreate_OnClick(sender: AnyObject) {
+        if(!inputGood()){
+            //display error
+            return
         }
-        return true
+        changeState()
+    }
+    @IBAction func btGoBack_onClick(sender: AnyObject) {
+        state = "q"
+        lbLabel.text = "Enter Question:"
+        tvTextView.text = question.qText
+        tvTextView.becomeFirstResponder()
+        btGoBack.hidden = true
     }
     @IBAction func btCreateNewSet_OnClick(sender: AnyObject) {
         switchEmbeddedVisibility()
     }
-    // MARK: - PickerView methods
+    
+    // MARK: - UIPickerView functions
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -218,5 +218,16 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return sets[row].name
+    }
+    //MARK: - UITextFieldDelegate functions
+    /**
+     Lets keyboard dissapear after typing
+     **/
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }

@@ -9,16 +9,18 @@
 import UIKit
 
 class RecentsVC: UIViewController {
-
+    
+    //MARK: - Data members
     var fetched = false     //if have fetched questions from server
     var sets = [QmSet]()
     var questions = [Question]()    //array of questions from server
     var scheduledForPush = [BoolWrapper]()   //parallel array with questions indicating if scheduled
     var qidsScheduledForPush = [Int]()  //qids of questions scheduled for push notifications
+    //MARK: - IBOutlets
     @IBOutlet var tvTable: UITableView!
     @IBOutlet var scTypeDisplayed: UISegmentedControl!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
-    
+    //MARK: - UIViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "setFetched", name: "setFetchedKey", object: nil)
@@ -31,12 +33,6 @@ class RecentsVC: UIViewController {
             performSegueWithIdentifier("logIn", sender: self)
         }
     }
-    /**
-        When user logs out via Settings, this fires to reset fetched to false
-    **/
-    func setFetched(){
-        fetched = false
-    }
     override func viewWillAppear(animated: Bool) {
         /*This way, questions are fetched only once from the server, after user logs in*/
         if USERNAME != "" {
@@ -48,6 +44,14 @@ class RecentsVC: UIViewController {
             }
             tvTable.reloadData() //always reload the tableview
         }
+    }
+    //MARK: - General
+    /**
+     setFetched
+     When user logs out via Settings, this fires to reset fetched to false
+     **/
+    func setFetched(){
+        fetched = false
     }
     /**
         IsScheduled
@@ -83,6 +87,7 @@ class RecentsVC: UIViewController {
         }
         aiSpinner.stopAnimating()
     }
+    //MARK: - Database interaction
     /**
      GetScheduledQuestions
      Requests qids of all scheduled questions for this device and stores them
@@ -106,6 +111,7 @@ class RecentsVC: UIViewController {
                                     self.qidsScheduledForPush.append(Int(qid)!)
                                 }
                             }
+                            gCountQueuedForPush = self.qidsScheduledForPush.count
                             self.configureScheduleForPush()
                         })
                     }
@@ -221,7 +227,7 @@ class RecentsVC: UIViewController {
         }
         task.resume()
     }
-    // MARK: - Table view data source
+    // MARK: - UITableView functions
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -229,7 +235,6 @@ class RecentsVC: UIViewController {
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         if scTypeDisplayed.selectedSegmentIndex == 0{
             return questions.count
         }
@@ -269,6 +274,7 @@ class RecentsVC: UIViewController {
             nextView.queued = scheduledForPush[indexPath!.row]
         }
     }
+    // MARK: - UISegmentedControl functions
     /**
      Fires when segmented control value changes(user clicks it)
     **/

@@ -8,12 +8,11 @@
 
 import UIKit
 /**
-    ViewController handling User Login. Pretty basic
-
-    *PRACTICALLY FINISHED*
+    ViewController handling User Login.
 **/
 class LoginVC: UIViewController, UITextFieldDelegate {
 
+    //MARK: - IBOutlets
     @IBOutlet var btCreateAccount: UIButton!
     @IBOutlet var btStopAsking: UIButton!
     @IBOutlet var btLogin: UIButton!
@@ -22,7 +21,10 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword: UITextField!
     var count = 0       //1 if login successful. 0 otherwise
-    
+    //MARK: - UIViewController functions
+    /**
+    viewDidLoad
+    **/
     override func viewDidLoad() {
         super.viewDidLoad()
         cvView.layer.borderColor = UIColor(netHex: 0x2DE2EF).CGColor
@@ -31,6 +33,13 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchEmbeddedVisibility", name: notification_key_login, object: nil)
         // Do any additional setup after loading the view.
     }
+    /**
+     viewWillAppear
+    **/
+    override func viewWillAppear(animated: Bool) {
+        count = 0
+    }
+    //MARK: - UI stuff
     /**
      SwitchEmbeddedVisibility
      Responsible for updating the UI to allow the user to create a new login, or taking
@@ -53,15 +62,16 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         }
     }
     /**
-     DissmissKeyboard
-     Simply allows the keyboard to vanish
-    **/
-    func dismissKeyboard(){
-        view.endEditing(true)
+     ClearFields
+     
+     clears uifields
+     **/
+    func clearFields(){
+        tfPassword.text = ""
+        tfUsername.text = ""
     }
-    override func viewWillAppear(animated: Bool) {
-        count = 0
-    }
+
+    //MARK: - Button presses
 /**
     btLogin_OnClick
     Executes when 'Log in' button pressed
@@ -69,16 +79,22 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBAction func btLogin_OnClick(sender: UIButton) {
         submitRequest()
     }
-/**
-    ClearFields
+    /**
+     BtStopAsking_OnClick
+     Button that has user confirm that they want all notifications to this device to stop
+     **/
+    @IBAction func btStopAsking_OnClick(sender: AnyObject) {
+        presentConfirmBox("Stop all questions being sent to this device?", fxn: stopAsking(), you: self)
+    }
     
-    clears uifields
-**/
-    func clearFields(){
-        tfPassword.text = ""
-        tfUsername.text = ""
+    /**
+     BtCreateAccount_OnClick
+     **/
+    @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
     }
 
+    //MARK: - Database interaction
 /**
     SubmitRequest
     The fxn that talks to the server. Sends the inputted name and password from the
@@ -132,37 +148,7 @@ func submitRequest(){
         }
         task.resume()
     }
-/**
-    Text_Field_Should_Return
-    
-    Allows keyboard to go away after user enters quantity by pressing return
-**/
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
-/**
-     BtStopAsking_OnClick
-     Button that has user confirm that they want all notifications to this device to stop
-**/
-    @IBAction func btStopAsking_OnClick(sender: AnyObject) {
-        let confirmBox = UIAlertController(title: "Stop all questions being sent to this device?", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-        confirmBox.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action: UIAlertAction!) in
-            self.stopAsking()
-        }))
-        
-        confirmBox.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
-            return
-        }))
-        presentViewController(confirmBox, animated: true, completion: nil)
-    }
-    
-/**
-     BtCreateAccount_OnClick
-**/
-    @IBAction func btCreateAccount_OnClick(sender: AnyObject) {
-        NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
-    }
+
 /**
      StopAsking
      Stops all push notifications to current device
@@ -183,5 +169,21 @@ func submitRequest(){
         }
         task.resume()
     }
-
+    //MARK: - UITextFieldDelegate functions
+    /**
+     DissmissKeyboard
+     Simply allows the keyboard to vanish
+     **/
+    func dismissKeyboard(){
+        view.endEditing(true)
+    }
+    /**
+     Text_Field_Should_Return
+     
+     Allows keyboard to go away after user enters quantity by pressing return
+     **/
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
 }

@@ -9,41 +9,57 @@
 import UIKit
 /**
     ViewController handling the create login screen
-
-    *FINISHED*
 **/
 class CreateLoginVC: UIViewController, UITextFieldDelegate {
 
+    //MARK: - IBOutlets
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
     @IBOutlet var tfUsername: UITextField!
     @IBOutlet var tfPassword1: UITextField!
     @IBOutlet var tfPassword2: UITextField!
     
+    //MARK: - UIViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "clearFields", name: notification_key_login, object: nil)
-
-        // Do any additional setup after loading the view.
     }
 
-/**
+    //MARK: - Button presses
+    /**
      btCancel_OnClick
-**/
+     Fires when 'Cancel' button pressed
+    **/
     @IBAction func btCancel_OnClick(sender: AnyObject) {
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
         pushAnswer("13", answer: "b", url: CHECK_ANSWER_PHP)
     }
+    /**
+     btSubmit_onClick
+     Fires when 'Submit' question pressed
+    **/
+    @IBAction func btSubmit_OnClick(sender: AnyObject) {
+        if !passwordsMatch(){
+            return
+        }
+        queryUser()
+    }
+    //MARK: - UI stuff
+    /**
+    clearFields
+    Sets all textfields to ""
+    **/
     func clearFields(){
         tfUsername.text = ""
         tfPassword1.text = ""
         tfPassword2.text = ""
     }
-/**
+    //MARK: - General
+    /**
         PassordsMatch
         Checks to see if passwords match and meet conditions
     
         @return Bool true if they do meet conditions, false if not
-**/
+    **/
     func passwordsMatch() -> Bool{
         if tfPassword1.text != "" && tfPassword1.text == tfPassword2.text{
             return true
@@ -53,11 +69,12 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
             return false
         }
     }
-/**
+    //MARK: - Database interaction
+    /**
     SubmitRequest
     The fxn that talks to the server. Sends the inputted name and password from the 
     textfields into a NSMutableRequest and sends to server
-**/
+    **/
     func queryUser(){
         aiSpinner.startAnimating()
         let send_this = "name='\(tfUsername.text!)'&pw='\(tfPassword2.text!)'"
@@ -87,12 +104,31 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         }
         task.resume()
     }
-
-/**
+    /**
+     PushAnswer
+     Registers question for push notifications
+     PARAMETERS:
+        question id
+        correct answer to question
+        url for php file
+    **/
+    func pushAnswer(qid:String,answer:String,url:String){
+        let send_this = "device=\(DEVICE_TOKEN)&qid=\(qid)&answer='\(answer)'"//note device token not in quotes
+        let request = getRequest(send_this, urlString: url)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data,response,error) in
+            if error != nil{
+                print("Error with \(url)")
+                return
+            }
+        }
+        task.resume()
+    }
+    /**
     CreateUser
     
     Inserts username and password into database
-**/
+     **/
     func createUser(){
         let send_this = "name='\(tfUsername.text!)'&pw='\(tfPassword2.text!)'"
         let request = getRequest(send_this, urlString: CREATE_USER_PHP)
@@ -110,12 +146,7 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         }
         task.resume()
     }
-    @IBAction func btSubmit_OnClick(sender: AnyObject) {
-        if !passwordsMatch(){
-            return
-        }
-        queryUser()
-    }
+    //MARK: - UITextFieldDelegate functions
     /**
     Text_Field_Should_Return
     
@@ -125,16 +156,5 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
-    func pushAnswer(qid:String,answer:String,url:String){
-        let send_this = "device=\(DEVICE_TOKEN)&qid=\(qid)&answer='\(answer)'"//note device token not in quotes
-        let request = getRequest(send_this, urlString: url)
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
-            (data,response,error) in
-            if error != nil{
-                print("Error with \(url)")
-                return
-            }
-        }
-        task.resume()
-    }
+    
 }

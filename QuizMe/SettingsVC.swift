@@ -9,14 +9,13 @@
 import UIKit
 /**
     ViewController handling settings screen.
-    Not even sure what settings we'd put in here
-
-    *NOT FINISHED*
 **/
 class SettingsVC: UIViewController {
 
+    //MARK: - IBOutlets
     @IBOutlet var tvTable2: UITableView!
     @IBOutlet var tvTable: UITableView!
+    //MARK: - ViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,27 +26,28 @@ class SettingsVC: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
+    //MARK: - General
+    /**
+     logOut
+     Logs the user out and returns to login screen
+    **/
     func logOut(){
         UID = 0
         USERNAME = ""
         NSNotificationCenter.defaultCenter().postNotificationName("setFetchedKey", object: self)
         performSegueWithIdentifier("logOut", sender: self)
     }
-    
+    /**
+     stopAsking1
+     Asks user if they're sure they want to stop all questions being sent to their device.
+    **/
     func stopAsking1() {
-        let confirmBox = UIAlertController(title: "Stop all questions being sent to this device?", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-        confirmBox.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action: UIAlertAction!) in
-            self.stopAsking2()
-        }))
-        
-        confirmBox.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
-            return
-        }))
-        presentViewController(confirmBox, animated: true, completion: nil)
+        presentConfirmBox("Stop all questions being sent to this device?", fxn: stopAsking2(), you: self)
     }
-   
+   /**
+     stopAsking2
+     Ceases all incoming questions to device
+    **/
     func stopAsking2(){
         let send_this = "device='\(DEVICE_TOKEN)'"
         let request = getRequest(send_this, urlString: STOP_ASKING_PHP)
@@ -65,23 +65,17 @@ class SettingsVC: UIViewController {
         task.resume()
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    // MARK: - TableView functions
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 2 //both tables have two rows
     }
-    
+    /**
+     configures the cells for the two tableviews
+     **/
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if tableView == tvTable{
             var cell = tableView.dequeueReusableCellWithIdentifier("Settings") as! SettingsTVC?
@@ -111,13 +105,21 @@ class SettingsVC: UIViewController {
             return cell!
         }
     }
+
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
         if tableView == tvTable2{
-            if indexPath.row == 0{
+            if indexPath.row == 0{//if selected logout cell
                 logOut()
             }
-            else if indexPath.row == 1{
+            else if indexPath.row == 1{//if selected 'stop notifications' cell
                 stopAsking1()
+            }
+        }else if tableView == tableView{
+            if indexPath.row == 0{//if selected profile cell
+                performSegueWithIdentifier("PROFILE", sender: self)
+            }
+            else if indexPath.row == 1{//if selected info cell
+                performSegueWithIdentifier("INFO", sender: self)
             }
         }
     }

@@ -11,6 +11,7 @@ import UIKit
 /**
     Global variables and functions
 **/
+//MARK: - URLs
 let EXTERNAL_IP = "http://108.183.44.149"
 let QUERY_USERNAME_PHP = "\(EXTERNAL_IP)/QuizMe/queryUsername.php"
 let CREATE_USER_PHP = "\(EXTERNAL_IP)/QuizMe/createUser.php"
@@ -24,10 +25,12 @@ let STOP_ASKING_PHP = "\(EXTERNAL_IP)/QuizMe/stopAsking.php"
 let DELETE_QUESTION_PHP = "\(EXTERNAL_IP)/QuizMe/deleteQuestion.php"
 let GET_SETS_PHP = "\(EXTERNAL_IP)/QuizMe/getSets.php"
 let CREATE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/createSet.php"
-
+let GET_FAVORITES_PHP = "\(EXTERNAL_IP)/QuizMe/getFavorites.php"
+//MARK: - Global variables
 var UID = 0
 var DEVICE_TOKEN = ""
 var USERNAME = ""
+var gCountQueuedForPush = 0
 let notification_key = "switch_visibility"
 let notification_key_login = "switch_login_visibility"
 let notification_key_reply = "user_answered"
@@ -38,6 +41,7 @@ let notification_question = "question"
 let notification_answer = "answer"
 let wrong_cat_id = "wrong_cat"
 let okCat_id = "okcat"
+//MARK: - Global functions
 /**
 Get_Request
 
@@ -88,4 +92,23 @@ extension UIColor {
 func formatStringRemoveQuotes(string:String) ->String{
     
     return string.stringByReplacingOccurrencesOfString("'", withString: "")
+}
+/**
+ presentConfirmBox
+ presents a confirmbox to the user
+ PARAMETERS:
+ message shown in box
+ a void function with no parameters to perfrom lest the user clicks 'Yes'
+ viewcontroller operating in(just pass in self)
+ **/
+func presentConfirmBox(message:String, fxn : (),you:UIViewController){
+    let confirmBox = UIAlertController(title: message, message: "", preferredStyle: UIAlertControllerStyle.Alert)
+    confirmBox.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (action: UIAlertAction!) in
+        fxn
+    }))
+    
+    confirmBox.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
+        return
+    }))
+    you.presentViewController(confirmBox, animated: true, completion: nil)
 }

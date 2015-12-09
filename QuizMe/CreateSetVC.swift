@@ -10,23 +10,20 @@ import UIKit
 
 class CreateSetVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
+    //MARK: - Data members
     let topics = ["None", "Biology","Chemistry","Computer Science", "Entertainment", "Earth Science", "Geography", "History", "Language","Literature","Miscellaneous", "Physics", "Sports"]
     
+    //MARK: - IBOutlets
     @IBOutlet var tfSetNme: UITextField!
     @IBOutlet var pvTopic: UIPickerView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-/**
+    //MARK: - Database interaction
+    /**
      CreateSet
-**/
+    **/
     func createSet(){
         
         let topicName = topics[pvTopic.selectedRowInComponent(0)]
@@ -47,6 +44,7 @@ class CreateSetVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         }
         task.resume()
     }
+    //MARK: - Button presses
     @IBAction func btCancel_OnClick(sender: AnyObject) {
         tfSetNme.text = ""
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key, object: self)
