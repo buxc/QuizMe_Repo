@@ -127,6 +127,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     //MARK: - Database interaction
     /**
     SubmitQuestion
+    creates question in db
     /***SINGLE QUOTES INCLUDED IN Q.TEXT OR A.TEXT WILL MAKE REQUEST FAIL**/
     **/
     func submitQuestion(){
