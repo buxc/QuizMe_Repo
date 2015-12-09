@@ -165,7 +165,7 @@
         <!--Favorites-->
         <scene sceneID="4Ow-mu-pg3">
             <objects>
-                <tableViewController id="KIB-sS-Jaz" customClass="FavoritesTableViewController" customModule="QuizMe" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="KIB-sS-Jaz" customClass="FavoritesTableVC" customModule="QuizMe" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="ubl-l6-cMQ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
