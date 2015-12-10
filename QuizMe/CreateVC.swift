@@ -155,7 +155,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
      **/
     func getSets(){
         sets.removeAll()
-        sets.append(QmSet(pid: 0, name: "NONE", topic: "", privat: "1", cr: 0))//always have 'NONE' as the first option
+        sets.append(QmSet(pid: 0, name: "---", topic: "", privat: "1", cr: 0))//always have 'NONE' as the first option
         let send_this = "uid=\(UID)"
         let request = getRequest(send_this, urlString: GET_SETS_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){

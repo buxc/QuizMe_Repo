@@ -118,9 +118,10 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     // MARK: - UISearchbar functions
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == ""{
-            return
+            resetFilteredResults()
+        }else{
+            filterSearch(searchText)
         }
-        filterSearch(searchText)
         tvTable.reloadData()
     }
     /**
@@ -139,5 +140,14 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             }
         })
     }
-
+    /**
+    resetFilterdResults
+    Fills filtered results with all results
+    **/
+    func resetFilteredResults(){
+        filteredResults.removeAll()
+        for element in results{
+            filteredResults.append(element)
+        }
+    }
 }

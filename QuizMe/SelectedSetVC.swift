@@ -19,6 +19,7 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     //MARK: - UITableView functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = set?.name
         getQuestions(set!.pid)
         // Do any additional setup after loading the view.
     }
@@ -29,15 +30,18 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let indexPath = tvTable.indexPathForSelectedRow
+        if let nextView = segue.destinationViewController as? BrowseQuestionVC{
+            nextView.question = questions[indexPath!.row]
+            tvTable.deselectRowAtIndexPath(indexPath!, animated: true)
+        }
     }
-    */
+
 
     //MARK: - Database interaction
     /**
@@ -88,11 +92,11 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return questions.count
     }
-    
+
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("Set") as UITableViewCell?
+        var cell = tableView.dequeueReusableCellWithIdentifier("Question") as UITableViewCell?
         if(cell == nil){
-            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Set")
+            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Question")
         }
         cell!.textLabel?.text = questions[indexPath.row].qText
         return cell!
