@@ -25,6 +25,7 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         let leftNavBarButton = UIBarButtonItem(customView: searchBar)
         self.navigationItem.rightBarButtonItem = leftNavBarButton
         self.navigationItem.title = topic
+        searchBar.delegate = self
         getSets()
         // Do any additional setup after loading the view.
     }
@@ -114,5 +115,29 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         cell!.textLabel?.text = filteredResults[indexPath.row].name
         return cell!
     }
-    //MARK: - UISearchBar functions
+    // MARK: - UISearchbar functions
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == ""{
+            return
+        }
+        filterSearch(searchText)
+        tvTable.reloadData()
+    }
+    /**
+    filterSearch
+    Filters the sets stored in 'results' and stores results of filtering in
+    'filteredResults'
+    PARAMETERS:
+        search string from search bar
+    **/
+    func filterSearch(searchText : String){
+        filteredResults = results.filter({( qmset: QmSet) -> Bool in
+            if qmset.name.rangeOfString(searchText) != nil{
+                return true
+            }else{
+                return false
+            }
+        })
+    }
+
 }

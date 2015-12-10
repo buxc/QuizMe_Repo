@@ -97,5 +97,5 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         cell!.textLabel?.text = questions[indexPath.row].qText
         return cell!
     }
-    
+        // MARK: - General
 }
