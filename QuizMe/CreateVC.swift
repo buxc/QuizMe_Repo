@@ -22,6 +22,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     var state = "q"
     var question = Question()
     var sets = [QmSet]()
+    var pickedSet : QmSet?
     //MARK: - IBOutlets
     @IBOutlet var btCreateNewSet: UIButton!
     @IBOutlet var cvView: UIView!
@@ -132,7 +133,8 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     **/
     func submitQuestion(){
         let qText = formatStringRemoveQuotes(question.qText)
-        let send_this = "question='\(qText)'&answer='\(question.aText)'&uid=\(UID)"
+        let pid = sets[pvSet.selectedRowInComponent(0)].pid
+        let send_this = "question='\(qText)'&answer='\(question.aText)'&uid=\(UID)&setID=\(pid)"
         let request = getRequest(send_this, urlString: CREATE_QUESTION_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
             (data, response, error) in  //all this happens once request has been completed, in another queue
@@ -153,6 +155,7 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
      **/
     func getSets(){
         sets.removeAll()
+        sets.append(QmSet(pid: 0, name: "NONE", topic: "", privat: "1", cr: 0))//always have 'NONE' as the first option
         let send_this = "uid=\(UID)"
         let request = getRequest(send_this, urlString: GET_SETS_PHP)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
@@ -220,6 +223,11 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return sets[row].name
     }
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, forComponent component: Int) {
+        if row != 0{
+            pickedSet = sets[row]
+        }
+    }
     //MARK: - UITextFieldDelegate functions
     /**
      Lets keyboard dissapear after typing
@@ -231,4 +239,5 @@ class CreateVC: UIViewController, UITextViewDelegate, UIPickerViewDataSource, UI
         }
         return true
     }
+    
 }
