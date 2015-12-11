@@ -18,6 +18,7 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     //MARK: - IBOutlets
     @IBOutlet var tvTable: UITableView!
     let searchBar : UISearchBar = UISearchBar(frame: CGRectMake(0,0,120,20))
+    @IBOutlet var aiSpinner: UIActivityIndicatorView!
     
     //MARK: - UIViewController functions
     override func viewDidLoad() {
@@ -41,6 +42,7 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     Fetches user defined sets from server
     **/
     func getSets(){
+        aiSpinner.startAnimating()
         results.removeAll()
         filteredResults.removeAll()
         let send_this = "topic='\(topic)'"
@@ -78,6 +80,7 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                 }
                 
             }
+                self.aiSpinner.stopAnimating()
                 self.tvTable.reloadData()
             })//end of block
         }

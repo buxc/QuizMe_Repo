@@ -54,9 +54,9 @@ class SearchVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("Basic") as UITableViewCell?
+        var cell = tableView.dequeueReusableCellWithIdentifier("Topic") as UITableViewCell?
         if(cell == nil){
-            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Basic")
+            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Topic")
         }
         cell!.textLabel?.text = topics[indexPath.row]
         return cell!

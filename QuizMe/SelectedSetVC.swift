@@ -15,6 +15,7 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     var set : QmSet?
     //MARK: - IBOutlets
     @IBOutlet var tvTable: UITableView!
+    @IBOutlet var aiSpinner: UIActivityIndicatorView!
     
     //MARK: - UITableView functions
     override func viewDidLoad() {
@@ -50,6 +51,7 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     Stores them in questions array
     **/
     func getQuestions(id:Int){
+        aiSpinner.startAnimating()
         questions.removeAll()
         let send_this = "packID=\(id)"
         let request = getRequest(send_this, urlString: GET_QUESTIONS_FROM_SET_PHP)
@@ -73,6 +75,7 @@ class SelectedSetVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                     }
                                 }
                             }
+                            self.aiSpinner.stopAnimating()
                             self.tvTable.reloadData()
                         })
                     }

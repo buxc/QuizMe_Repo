@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecentsVC: UIViewController {
+class RecentsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     //MARK: - Data members
     var fetched = false     //if have fetched questions from server
@@ -16,10 +16,12 @@ class RecentsVC: UIViewController {
     var questions = [Question]()    //array of questions from server
     var scheduledForPush = [BoolWrapper]()   //parallel array with questions indicating if scheduled
     var qidsScheduledForPush = [Int]()  //qids of questions scheduled for push notifications
+    
     //MARK: - IBOutlets
     @IBOutlet var tvTable: UITableView!
     @IBOutlet var scTypeDisplayed: UISegmentedControl!
     @IBOutlet var aiSpinner: UIActivityIndicatorView!
+    
     //MARK: - UIViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +35,7 @@ class RecentsVC: UIViewController {
             performSegueWithIdentifier("logIn", sender: self)
         }
     }
+    
     override func viewWillAppear(animated: Bool) {
         /*This way, questions are fetched only once from the server, after user logs in*/
         if USERNAME != "" {
@@ -276,6 +279,14 @@ class RecentsVC: UIViewController {
         }
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if scTypeDisplayed.selectedSegmentIndex == 0{
+            performSegueWithIdentifier("SelectedQuestion", sender: self)
+        }else{
+            performSegueWithIdentifier("SelectedSet", sender: self)
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("Basic") as! BasicTableViewCell?
         if(cell == nil){
@@ -296,9 +307,16 @@ class RecentsVC: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let indexPath = tvTable.indexPathForSelectedRow
-        if let nextView = segue.destinationViewController as? SelectedCellVC{
-            nextView.question = questions[indexPath!.row]
-            nextView.queued = scheduledForPush[indexPath!.row]
+        if scTypeDisplayed.selectedSegmentIndex == 1{ //if sets selected
+            if let nextView = segue.destinationViewController as? RecentSelectedSetVC{
+                nextView.set = sets[indexPath!.row]
+            }
+        }
+        else{
+            if let nextView = segue.destinationViewController as? SelectedCellVC{
+                nextView.question = questions[indexPath!.row]
+                nextView.queued = scheduledForPush[indexPath!.row]
+            }
         }
     }
     // MARK: - UISegmentedControl functions

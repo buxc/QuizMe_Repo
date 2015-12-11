@@ -122,6 +122,7 @@ class SettingsVC: UIViewController {
                 performSegueWithIdentifier("INFO", sender: self)
             }
         }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
 }
