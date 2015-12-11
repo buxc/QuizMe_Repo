@@ -13,7 +13,8 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     //MARK: - Data members
     var topic = ""
     var results = [QmSet]() //stores search results
-    var filteredResults = [QmSet] ()//filtered sets
+    var filteredResults = [QmSet]()//filtered sets
+    var favorites = [Int]()
     
     //MARK: - IBOutlets
     @IBOutlet var tvTable: UITableView!
@@ -27,6 +28,7 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         self.navigationItem.rightBarButtonItem = leftNavBarButton
         self.navigationItem.title = topic
         searchBar.delegate = self
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "favoriteToggled:", name: "Favorite_key", object: nil)
         getSets()
         // Do any additional setup after loading the view.
     }
@@ -35,8 +37,52 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    // MARK: - General
+    /**
+    inFavorites
+    tells you whether or not a given set is favorited
+    PARAMETERS:
+        pid of set
+    RETURNS:
+        true if yes, false if no
+    **/
+    func inFavorites(pid:Int) -> Bool{
+        for el in favorites{
+            if el == pid{
+                return true
+            }
+        }
+        return false
+    }
     
     //MARK: - Database interaction
+    /**
+    favoriteToggled
+    **/
+    func favoriteToggled(notification:NSNotification){
+        var info = [[String: AnyObject]]()
+        info.append(notification.userInfo as! [String:String])
+        let isFavorited = info[0]["fav"] as! String
+        let pid = Int(info[0]["pid"] as! String)
+        var url : String
+        if isFavorited == "true"{
+            url = UNFAVORITE_SET_PHP
+        }else{
+            url = FAVORITE_SET_PHP
+            favorites.append(pid!) //assuming favoriting will be successful
+        }
+        let send_this = "uid=\(UID)&pid=\(pid!)"
+        let request = getRequest(send_this, urlString: url)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){
+            (data, response, error) in  //all this happens once request has been completed, in another queue
+            if error != nil{
+                print("Error with creating login")
+                return
+            }
+            
+        }
+        task.resume()
+    }
     /**
     GetSets
     Fetches user defined sets from server
@@ -111,11 +157,17 @@ class SelectedTopicVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("Set") as UITableViewCell?
+        var cell = tableView.dequeueReusableCellWithIdentifier("Set") as! FavoritesTVC?
         if(cell == nil){
-            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Set")
+            cell = FavoritesTVC(style:UITableViewCellStyle.Default, reuseIdentifier:"Set")
         }
         cell!.textLabel?.text = filteredResults[indexPath.row].name
+        cell!.pid = filteredResults[indexPath.row].pid
+        if inFavorites(filteredResults[indexPath.row].pid){
+            //cell!.btFavorite.imageView?.image = UIImage(named: "star.png")//if favorited, show gold star
+            cell!.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell!.favorited = true
+        }
         return cell!
     }
     // MARK: - UISearchbar functions

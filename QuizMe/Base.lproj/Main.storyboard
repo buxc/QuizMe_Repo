@@ -219,7 +219,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="57" id="lIN-fL-PfC" customClass="BasicTableViewCell" customModule="QuizMe" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="57" id="lIN-fL-PfC">
                                 <rect key="frame" x="0.0" y="92" width="600" height="57"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lIN-fL-PfC" id="iad-Ic-XtT">
@@ -234,10 +234,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Favorites" id="p3G-Ij-9Au"/>
+                    <connections>
+                        <segue destination="FGY-c6-0C1" kind="show" identifier="favToq" id="1JK-oi-MoM"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="glE-Q3-KRj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="840" y="576"/>
+            <point key="canvasLocation" x="975" y="806"/>
         </scene>
         <!--FavoritesNC-->
         <scene sceneID="UOm-WL-zB9">
@@ -248,6 +251,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.2818474205" green="0.91626381219999997" blue="0.90664838110000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="KIB-sS-Jaz" kind="relationship" relationship="rootViewController" id="258-tS-E0N"/>
@@ -255,7 +261,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KTT-PO-PI0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-194" y="559"/>
+            <point key="canvasLocation" x="35" y="757"/>
         </scene>
         <!--SearchNC-->
         <scene sceneID="Mdm-mO-GmS">
@@ -347,7 +353,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="47" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tJe-6B-eCz">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tJe-6B-eCz">
                                 <rect key="frame" x="0.0" y="0.0" width="587" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -356,14 +362,34 @@
                                     <constraint firstAttribute="height" constant="600" id="kdZ-oQ-uNM"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Set" rowHeight="47" id="jdB-Zo-caF">
-                                        <rect key="frame" x="0.0" y="92" width="587" height="47"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Set" rowHeight="48" id="jdB-Zo-caF" customClass="FavoritesTVC" customModule="QuizMe" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="587" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jdB-Zo-caF" id="Td7-Eo-jxX">
-                                            <rect key="frame" x="0.0" y="0.0" width="554" height="46"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="554" height="47"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJc-Gd-6fY">
+                                                    <rect key="frame" x="485" y="8" width="36" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="32" id="nG1-8i-llD"/>
+                                                        <constraint firstAttribute="width" constant="36" id="pxZ-Vt-xTr"/>
+                                                    </constraints>
+                                                    <state key="normal" image="star2.png">
+                                                        <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="btFavorite_OnClick:" destination="jdB-Zo-caF" eventType="touchUpInside" id="qnO-TS-fEU"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="dJc-Gd-6fY" secondAttribute="trailing" constant="25" id="Qfk-ZU-IYx"/>
+                                                <constraint firstItem="dJc-Gd-6fY" firstAttribute="top" secondItem="Td7-Eo-jxX" secondAttribute="topMargin" id="yep-EQ-rmG"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btFavorite" destination="dJc-Gd-6fY" id="Pav-dY-wzD"/>
                                             <segue destination="Tq2-0q-hBh" kind="show" id="WBv-rY-1pg"/>
                                         </connections>
                                     </tableViewCell>
@@ -1248,9 +1274,11 @@
     </scenes>
     <resources>
         <image name="logo.png" width="360" height="360"/>
+        <image name="star2.png" width="75" height="75"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8vA-fl-Ix4"/>
         <segue reference="tFV-me-22B"/>
+        <segue reference="8vA-fl-Ix4"/>
+        <segue reference="1JK-oi-MoM"/>
     </inferredMetricsTieBreakers>
 </document>

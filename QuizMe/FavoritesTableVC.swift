@@ -11,11 +11,12 @@ import UIKit
 class FavoritesTableVC: UITableViewController {
 
     //MARK: - Data members
+    var fetched = false
     var sets = [QmSet]()
     //MARK: - UIViewController functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "switchFetched", name: "favorites_fetch_key", object: nil)
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -24,12 +25,23 @@ class FavoritesTableVC: UITableViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        getSets()
+        if fetched == false{
+            getSets()
+            fetched = true
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    // MARK: - General
+    func switchFetched(){
+        if fetched == true{
+            fetched = false
+        }else{
+            fetched = true
+        }
     }
     //MARK: - Database interaction
     /**
@@ -62,8 +74,13 @@ class FavoritesTableVC: UITableViewController {
                             }
                             
                         }
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.tableView.reloadData()
+                            
+                        })
                     }
                 }
+                
                 catch let e as NSError {
                     print(e)
                 }
@@ -84,16 +101,17 @@ class FavoritesTableVC: UITableViewController {
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("Basic") as! BasicTableViewCell?
+        var cell = tableView.dequeueReusableCellWithIdentifier("fav") as UITableViewCell?
         if(cell == nil){
-            cell = BasicTableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"Basic")
+            cell = UITableViewCell(style:UITableViewCellStyle.Default, reuseIdentifier:"fav")
         }
-        cell!.lbType.text = "S:"
-        cell!.lbQuestion.text = sets[indexPath.row].name
+        cell!.textLabel?.text = sets[indexPath.row].name
         return cell!
     }
     
-
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("favToq", sender: self)
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -129,14 +147,17 @@ class FavoritesTableVC: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if let nextView = segue.destinationViewController as? RecentSelectedSetVC{
+            nextView.set = sets[tableView.indexPathForSelectedRow!.row]
+            tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: true)
+        }
+
     }
-    */
+    
 
 }

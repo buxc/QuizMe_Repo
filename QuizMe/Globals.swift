@@ -29,6 +29,8 @@ let GET_FAVORITES_PHP = "\(EXTERNAL_IP)/QuizMe/getFavorites.php"
 let GET_SETS_FROM_TOPIC_PHP = "\(EXTERNAL_IP)/QuizMe/getSetsFromTopic.php"
 let GET_QUESTIONS_FROM_SET_PHP = "\(EXTERNAL_IP)/QuizMe/getQuestionsFromSet.php"
 let DELETE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/deleteSet.php"
+let FAVORITE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/favoriteSet.php"
+let UNFAVORITE_SET_PHP = "\(EXTERNAL_IP)/QuizMe/unfavoriteSet.php"
 //MARK: - Global variables
 var UID = 0
 var DEVICE_TOKEN = ""
