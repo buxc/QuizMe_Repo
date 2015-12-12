@@ -375,7 +375,7 @@
                                                         <constraint firstAttribute="height" constant="32" id="nG1-8i-llD"/>
                                                         <constraint firstAttribute="width" constant="36" id="pxZ-Vt-xTr"/>
                                                     </constraints>
-                                                    <state key="normal" image="star2.png">
+                                                    <state key="normal" image="logo.png">
                                                         <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     </state>
                                                     <connections>
@@ -578,6 +578,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.2818474205" green="0.91626381219999997" blue="0.90664838110000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="aQL-Mv-WDi" kind="relationship" relationship="rootViewController" id="ML1-CU-zwL"/>
@@ -1274,7 +1277,6 @@
     </scenes>
     <resources>
         <image name="logo.png" width="360" height="360"/>
-        <image name="star2.png" width="75" height="75"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="tFV-me-22B"/>

@@ -31,7 +31,6 @@ class CreateLoginVC: UIViewController, UITextFieldDelegate {
     **/
     @IBAction func btCancel_OnClick(sender: AnyObject) {
         NSNotificationCenter.defaultCenter().postNotificationName(notification_key_login, object: self)
-        pushAnswer("13", answer: "b", url: CHECK_ANSWER_PHP)
     }
     /**
      btSubmit_onClick
